@@ -1,0 +1,84 @@
+﻿<?xml version="1.0"?>
+<view icon="8100" title="Handyman" width="400" height="300">
+  <control progid="DecalControls.Notebook" name="nbMain">
+
+    <page label="Main">
+      <control progid="DecalControls.FixedLayout" clipped="">
+        <control progid="DecalControls.Checkbox" name="chkEnabled" left="8" top="8" width="100" height="20" text="Enable Bot"/>
+        <control progid="DecalControls.Checkbox" name="chkArmorTink" left="8" top="30" width="120" height="20" text="Use Armor Tinkering"/>
+        <control progid="DecalControls.Checkbox" name="chkItemTink" left="8" top="52" width="115" height="20" text="Use Item Tinkering"/>
+        <control progid="DecalControls.Checkbox" name="chkMagicItemTink" left="8" top="74" width="150" height="20" text="Use Magic Item Tinkering"/>
+        <control progid="DecalControls.Checkbox" name="chkWeaponTink" left="8" top="96" width="150" height="20" text="Use Weapon Tinkering"/>
+        <control progid="DecalControls.Checkbox" name="chkSalvaging" left="8" top="118" width="100" height="20" text="Use Salvaging"/>
+        <control progid="DecalControls.Checkbox" name="chkAlchemy" left="200" top="8" width="100" height="20" text="Use Alchemy"/>
+        <control progid="DecalControls.Checkbox" name="chkCooking" left="200" top="30" width="100" height="20" text="Use Cooking"/>
+        <control progid="DecalControls.Checkbox" name="chkFletching" left="200" top="52" width="100" height="20" text="Use Fletching"/>
+        <control progid="DecalControls.Checkbox" name="chkLockpick" left="200" top="74" width="100" height="20" text="Use Lockpick"/>
+        <control progid="DecalControls.Checkbox" name="chkTier4Rares" left="200" top="96" width="125" height="20" text="Use Tier 4 Rares"/>
+        <control progid="DecalControls.Checkbox" name="chkSetUst"    left ="8" top="150" width="200" height="20" text="Set Ust by clicking it in backpack and then checking this box."/>
+        <control progid="DecalControls.Checkbox" name="chkSetFocusingStone"    left ="8" top="172" width="200" height="20" text="Set Focusing Stone by clicking it in backpack and then checking this box."/>
+
+        <!--<control progid="DecalControls.PushButton" name="btnCheckVersion" left="200" top="178" width="100" height="17" text="Check Version" fontstyle="bold"/>-->
+      </control>
+    </page>
+    <page label="Buffs">
+      <control progid="DecalControls.FixedLayout" clipped="">
+        <control progid="DecalControls.Checkbox" name="chkBuffsEnabled" left="8" top="8" width="100" height="20" text="Buff Self"/>
+        <control progid="DecalControls.Checkbox" name="chkBuffOnStart" left="8" top="30" width="100" height="20" text="Rebuff on Restart"/>
+        <control progid="DecalControls.Checkbox" name="chkUseBeers" left="8" top="52" width="100" height="20" text="Use Beers *"/>
+        <control progid="DecalControls.Checkbox" name="chkUseRares" left="8" top="74" width="100" height="20" text="Use Rares *"/>
+        <control progid="DecalControls.Checkbox" name="chkUseBuffBot" left="140" top="8" width="100" height="20" text="Use Buff Bot"/>
+        <control progid="DecalControls.Checkbox" name="chkSetBuffingWand" left="140" top="30" width="200" height="20" text="Set Buffing Wand by clicking wand to use and then checking this box."/>
+        <control progid="DecalControls.Checkbox" name="chkUseLevelVIIBuffs" left="140" top="60" width="100" height="20" text="Use Level VII Buffs"/>
+        <control progid="DecalControls.Checkbox" name="chkUseLevelVIIIBuffs" left="160" top="82" width="100" height="20" text="Use Level VIII Buffs"/>
+
+        <control progid="DecalControls.StaticText" name="buffsRareInfo" left="1" top="170" width="345" height="40" text="* Beers and rares will only be used if given in the same trade window as the item."/>
+      </control>
+    </page>
+    <page label="Advanced Options">
+      <control progid="DecalControls.FixedLayout" clipped="">
+        <control progid="DecalControls.Checkbox" name="chkLogOff" left="8" top="8" width="240" height="20" text="Log off on Monster Detection (Level 100+)"/>
+        <control progid="DecalControls.Checkbox" name="chkUseCharge" left="8" top="30" width="200" height="20" text="Use Mana Stones/Charges"/>
+        <control progid="DecalControls.Checkbox" name="chkEquip" left="8" top="52" width="200" height="20" text="Equip/Dequip Items"/>
+        <control progid="DecalControls.Checkbox" name="chkUseWeb" left="8" top="74" width="200" height="20" text="Appear on CraftBot Site"/>
+        <control progid="DecalControls.Checkbox" name="chkRareAllegChan" left="8" top="96" width="240" height="20" text="Broadcast Rare Use to Allegiance"/>
+        <control progid="DecalControls.Checkbox" name="chkRareTradeChan" left="8" top="118" width="240" height="20" text="Broadcast Rare Use to Trade Channel"/>
+        <control progid="DecalControls.Checkbox" name="chkEnableMail" left="8" top="140" width="240" height="20" text="Enable Mail"/>
+        <control progid="DecalControls.Checkbox" name="chkEnterSpamMail" left="8" top="162" width="240" height="20" text="Advertise Mail Feature"/>
+        <control progid="DecalControls.Checkbox" name="chkEnterSpamRare" left="8" top="184" width="240" height="20" text="Advertise Tier 4 Rare Feature"/>
+      </control>
+    </page>
+    <page label="Skill Check">
+      <control progid="DecalControls.FixedLayout" clipped="">
+        <control progid="DecalControls.Checkbox" name="chkCalcMajors" left="8" top="8" width="125" height="20" text="Use Majors *"/>
+        <control progid="DecalControls.Checkbox" name="chkJourneymanPet" left="8" top="30" width="250" height="20" text="Use Journeyman (+10) Crafting Pets"/>
+        <control progid="DecalControls.Checkbox" name="chkMasterPet" left="8" top="52" width="250" height="20" text="Use Master (+20) Crafting Pets"/>
+        <control progid="DecalControls.Checkbox" name="chkArtisanPet" left="8" top="74" width="250" height="20" text="Use Artisan (+30) Crafting Pets"/>
+        <control progid="DecalControls.StaticText" name="skillCheckMajorInfo" left="1" top="170" width="345" height="40" text="* This option assumes that you have all majors for the skill equipped."/>
+      </control>
+    </page>
+    <page label="Messages">
+      <control progid="DecalControls.FixedLayout" clipped="">
+        <control progid="DecalControls.List" name="listMessages" width="350" height="175">
+          <column progid="DecalControls.TextColumn" name="colMessageSender" fixedwith="80"/>
+          <column progid="DecalControls.TextColumn" name="colMessageText" fixedwidth="140"/>
+          <column progid="DecalControls.TextColumn" name="colMessageTime" fixedwidth="130"/>
+        </control>
+        <control progid="DecalControls.PushButton" name="btnClearMessages" left="125" top="178" width="100" height="17" text="Clear Messages" fontstyle="bold"/>
+      </control>
+    </page>
+    <page label="Returns">
+      <control progid="DecalControls.FixedLayout" clipped="">
+        <control progid="DecalControls.List" name="listReturn" width="350" height="175">
+          <column progid="DecalControls.TextColumn" name="colReturnPerson" fixedwith="80"/>
+          <column progid="DecalControls.TextColumn" name="colReturnName" fixedwidth="140"/>
+          <column progid="DecalControls.TextColumn" name="colReturnTime" fixedwidth="130"/>
+        </control>
+        <control progid="DecalControls.StaticText" name="returnHelp" left="1" top="180" width="120" height="40" text="Return Selected Item To:"/>
+        <control progid="DecalControls.Edit" name="txtReturnTo" left="125" top="180" width="95" height="17" imageportalsrc="19519" textcolor="14737632" text="" />
+        <control progid="DecalControls.PushButton" name="btnAddReturn" left="223" top="180" width="25" height="17" text="Add" fontstyle="bold"/>
+        <control progid="DecalControls.PushButton" name="btnRemoveReturn" left="252" top="180" width="95" height="17" text="Remove Selected" fontstyle="bold"/>
+      </control>
+    </page>
+  </control>
+</view>
