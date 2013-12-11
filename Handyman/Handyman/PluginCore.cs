@@ -72,7 +72,6 @@ namespace Handyman
                     CraftbotMasterTimer.Stop();
                     CraftbotMasterTimer.Tick -= CraftbotMasterTimer_Tick;
                 }
-
                 Core.CharacterFilter.LoginComplete -= new EventHandler(CharacterFilter_LoginComplete);
                // ClearRuleRelatedComponents();
 
@@ -128,6 +127,8 @@ namespace Handyman
             Core.WorldFilter.EnterTrade -= new EventHandler<Decal.Adapter.Wrappers.EnterTradeEventArgs>(WorldFilter_EnterTrade);
             Core.WorldFilter.AcceptTrade -= new EventHandler<AcceptTradeEventArgs>(WorldFilter_AcceptTrade);
             Core.WorldFilter.AddTradeItem -= new EventHandler<AddTradeItemEventArgs>(WorldFilter_AddTradeItem);
+
+            CoreManager.Current.RenderFrame -= new EventHandler<EventArgs>(RenderFrame_Equip);
 
             if (BuffingTimer != null) { BuffingTimer.Stop(); BuffingTimer = null; buffPending = false; }
 

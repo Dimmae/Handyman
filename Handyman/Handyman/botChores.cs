@@ -30,6 +30,7 @@ namespace Handyman
     {
         private int ntinkobj = 0;
         private int nsalvage = 0;
+        DateTime tinkTime;
 
         private void initiateSalvagingSequence()
         {
@@ -138,9 +139,57 @@ namespace Handyman
             }
         }
 
+         private void TinkArmor()
+         {
+             Util.WriteToChat("I am in TinkArmor");
+             if (chatCmd == "Armor")
+             {
+                 try
+                 {
+                     if (TrdObjects.Count > 1)
+                     {
+
+                         int nobj = TrdObjects.Count;
+                         WorldObject obj;
+                         string objClass;
+                         int nobjID;
+                         Util.WriteToChat("nobj " + nobj);
+                         List<int> salvages = new List<int>();
+                         for (int n = 0; n < nobj; n++)
+                         {
+                             obj = TrdObjects[n];
+                             Util.WriteToChat("n = " + n + ", " + obj.Name);
+                             nobjID = obj.Id;
+                             objClass = obj.ObjectClass.ToString();
+                             //       if (TrdObjects[n].Name.Contains("Salvaged"))
+                             if (obj.Name.Contains("Salvage"))
+                             {
+                                 nsalvage = nobjID;
+                                 salvages.Add(nobjID);
+                                 Util.WriteToChat("Added " + obj.Name + " to salvages");
+                             }
+                             else if (objClass.Contains("Armor") || objClass.Contains("Clothing"))
+                             {
+                                 ntinkobj = nobjID;
+                                 Util.WriteToChat("ntinkobj " + ntinkobj.ToString());
+
+                             }
+                         } // end of for int n
+
+                         Util.WriteToChat("Objtotink " + ntinkobj.ToString() + ", salvage " + salvages[0].ToString());
+                         tinkTime = DateTime.Now;
+
+                          DotheTink();
+                     } // end of trdobjects.count
+                 }
+                 catch (Exception ex) { Util.LogError(ex); }
+             }
+         }
+
          private void DotheTink()
          {
              try{
+                 Util.WriteToChat("I am in DotheTink");
                  CoreManager.Current.RenderFrame += new EventHandler<EventArgs>(RenderFrame_Tink);
 
 
@@ -151,37 +200,30 @@ namespace Handyman
 
          private void RenderFrame_Tink(object sender, EventArgs e)
          {
-             try{
-             Core.Actions.ApplyItem(ntinkobj, nsalvage);
-             if (bTinkSucceeded) { CoreManager.Current.RenderFrame -= new EventHandler<EventArgs>(RenderFrame_Tink); }
+             try
+             {
+
+                 CoreManager.Current.RenderFrame -= new EventHandler<EventArgs>(RenderFrame_Tink);
+                 Double TimeElapsed = Convert.ToDouble(DateTime.Now - tinkTime);
+                 Util.WriteToChat("Number of seconds: " + TimeElapsed);
+                 if ((DateTime.Now - tinkTime).TotalSeconds == 5)
+                 {
+                     Util.WriteToChat("I am in function to tink");
+                     Core.Actions.ApplyItem(ntinkobj, nsalvage);
+
+                     if (bTinkSucceeded) { CoreManager.Current.RenderFrame -= new EventHandler<EventArgs>(RenderFrame_Tink); }
+                     else { CoreManager.Current.RenderFrame += new EventHandler<EventArgs>(RenderFrame_Tink); }
+
+                 }
+                 else { CoreManager.Current.RenderFrame += new EventHandler<EventArgs>(RenderFrame_Tink); }
+
+
              }
              catch (Exception ex) { Util.LogError(ex); }
 
          }
 
-        //private void initiateArmorTinkingSequence()
-        //{
-        //    Util.WriteToChat("I am in function to initiate Armor Tinking");
-        //    try
-        //    {
-        //        if (chatCmd == "Armor")
-        //        {
-        //            msub = "remove";
-        //            clearBotOutfit();
-        //            msub = "equip";
-        //            EquipOutfit();
-        //            Util.WriteToChat("outfit is equiped.");
-        //            //////Core.Actions.TradeReset();
-        //            ////   Core.WorldFilter.EnterTrade += new EventHandler<Decal.Adapter.Wrappers.EnterTradeEventArgs>(WorldFilter_EnterTrade);
-        //            //msub = "remove";
-        //            //Util.WriteToChat("I will now remove outfit.");
-        //            //EquipOutfit();
-        //        }
-        //    }
-        //    catch (Exception ex) { Util.LogError(ex); }
-
-
-        //}
+ 
 
         private void checkFocus()
         {
@@ -208,10 +250,10 @@ namespace Handyman
             Util.WriteToChat("I am in checkBeers and chatcmd: " + chatCmd);
             checkEnhancements();
             mroutine = "drinkingbeers";
-            if (!bZongoinUse && chatCmd == "Weapon")
+            if (chatCmd == "Weapon" && !bZongoinUse )
             {msecondarysubRoutine = "GeneralBeers"; string name = "Zongo"; Util.WriteToChat("I am boing to drink Zongo's"); drinkBeers(name); }
-            else if (!bBrighteyesinUse && chatCmd == "Item") { msecondarysubRoutine = "GeneralBeers"; Util.WriteToChat("mSecondarysubroutine " + msecondarysubRoutine); string name = "Amber Ape"; drinkBeers(name); }
-            else if (!bHunterinUse && chatCmd == "Armor") { msecondarysubRoutine = "GeneralBeers"; string name = "Hunter"; drinkBeers(name); }
+            else if (chatCmd == "Item" && !bBrighteyesinUse) { msecondarysubRoutine = "GeneralBeers"; Util.WriteToChat("mSecondarysubroutine " + msecondarysubRoutine); string name = "Amber Ape"; drinkBeers(name); }
+            else if (chatCmd == "Armor" && !bHunterinUse ) { msecondarysubRoutine = "GeneralBeers"; string name = "Hunter"; drinkBeers(name); }
             else
             {
                 mroutine = "";
@@ -237,7 +279,12 @@ namespace Handyman
                         break;
                     }
                 }
-                if (beer < 0) { bDrankBeer = false; useEnhancement(); }
+                if (beer < 0) 
+                { 
+                    bDrankBeer = false;
+                    Util.WriteToChat("I am on my way to useenhancements");
+                    UseEnhance = DateTime.Now;
+                    useEnhancement(); }
                 else
                 {
                     Globals.Host.Actions.InvokeChatParser("/r " + ", " + "I am out of beers.  If you do not wish to continue, please tell me, 'remove'.");

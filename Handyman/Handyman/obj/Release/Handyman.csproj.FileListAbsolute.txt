@@ -3,13 +3,9 @@ C:\Games\Decal Plugins\Handyman\Handyman\Handyman\obj\Release\Interop.SpellFilte
 C:\Games\Decal Plugins\Handyman\Handyman\Handyman\obj\Release\Handyman.csproj.ResolveComReference.cache
 C:\Games\Decal Plugins\Handyman\Handyman\Handyman\bin\Release\Handyman.dll
 C:\Games\Decal Plugins\Handyman\Handyman\Handyman\bin\Release\Handyman.pdb
-C:\Games\Decal Plugins\Handyman\Handyman\Handyman\bin\Release\Decal.Adapter.dll
-C:\Games\Decal Plugins\Handyman\Handyman\Handyman\bin\Release\Decal.FileService.dll
 C:\Games\Decal Plugins\Handyman\Handyman\Handyman\bin\Release\VirindiViewService.dll
 C:\Games\Decal Plugins\Handyman\Handyman\Handyman\bin\Release\WebControlWrapper.dll
 C:\Games\Decal Plugins\Handyman\Handyman\Handyman\bin\Release\System.Data.SQLite.dll
-C:\Games\Decal Plugins\Handyman\Handyman\Handyman\bin\Release\Decal.Adapter.xml
-C:\Games\Decal Plugins\Handyman\Handyman\Handyman\bin\Release\Decal.FileService.xml
 C:\Games\Decal Plugins\Handyman\Handyman\Handyman\bin\Release\VirindiViewService.xml
 C:\Games\Decal Plugins\Handyman\Handyman\Handyman\bin\Release\Decal.Interop.Core.DLL
 C:\Games\Decal Plugins\Handyman\Handyman\Handyman\bin\Release\Decal.Interop.Filters.DLL
@@ -18,3 +14,5 @@ C:\Games\Decal Plugins\Handyman\Handyman\Handyman\bin\Release\Interop.SpellFilte
 C:\Games\Decal Plugins\Handyman\Handyman\Handyman\obj\Release\Handyman.dll
 C:\Games\Decal Plugins\Handyman\Handyman\Handyman\obj\Release\Handyman.pdb
 C:\Games\Decal Plugins\Handyman\Handyman\Handyman\bin\Release\Decal.Interop.Inject.dll
+C:\Games\Decal Plugins\Handyman\Handyman\Handyman\obj\Release\Handyman.Properties.Resources.resources
+C:\Games\Decal Plugins\Handyman\Handyman\Handyman\obj\Release\Handyman.csproj.GenerateResource.Cache

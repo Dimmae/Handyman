@@ -69,6 +69,8 @@ namespace Handyman
 
         string spellName = null;
         int spellID = 0;
+        DateTime UseEnhance = DateTime.MinValue;
+
 
 
         public void checkEnhancements()
@@ -147,8 +149,7 @@ namespace Handyman
  
         }
 
-  
-        DateTime UseEnhance = DateTime.MinValue;
+
 
 
         public void useEnhancement()

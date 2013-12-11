@@ -75,6 +75,7 @@ namespace Handyman
                 if (requestorID == botGuid) { Util.WriteToChat("Traderid = Krafie"); }
                 Util.WriteToChat("Trade window started and trader is = " + requestorName);
                 Util.WriteToChat("Inventory currently is " + botInventory.Count);
+                Util.WriteToChat("chatCmd: " + chatCmd);
                  if ((chatCmd == null) || (chatCmd == ""))
                 {
                     WriteToTrader("You must give me a command such as salvage, weapon, armor, before I can continue.");
@@ -170,6 +171,9 @@ namespace Handyman
                     break;
                 case "Weapon":
                     TinkWeapon();
+                    break;
+                case "Armor":
+                    TinkArmor();
                     break;
 
             }

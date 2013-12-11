@@ -28,13 +28,15 @@ namespace Handyman
     {
 
         List<int> equipToWield = new List<int>();
+        List<int> equipToRemove = new List<int>();
         int equipmentCount = 0;
         int equipmentWielded = 0;
         int item = 0;
         int myCount;
         List<int> toEquip = new List<int>();
         DateTime equipTime = DateTime.MinValue;
-        List< WorldObject> botEquip = new List<WorldObject>();
+        List<WorldObject> botEquip = new List<WorldObject>();
+        List<WorldObject> botRemove = new List<WorldObject>();
         WorldObject focusingObj = null;
 
 
@@ -42,10 +44,9 @@ namespace Handyman
        {
                try
                {
-                   equipToWield = new List<int>();
-                   botEquip = new List<WorldObject>();
-                   equipToWield = new List<int>();
-                  Util.WriteToChat("I am in function clearBotOutfit; secondarysubroutine = " + msecondarysubRoutine);
+                   equipToRemove = new List<int>();
+                   botRemove = new List<WorldObject>();
+
                    foreach (Decal.Adapter.Wrappers.WorldObject obj in Core.WorldFilter.GetInventory())
                    {
                        try
@@ -53,8 +54,8 @@ namespace Handyman
 
                            if (obj.Values(LongValueKey.Slot) == -1)
                            {
-                             equipToWield.Add(obj.Id);
-                             botEquip.Add(obj);
+                             equipToRemove.Add(obj.Id);
+                             botRemove.Add(obj);
                            }
                            if (obj.Id == myFocusingStone) { focusingObj = obj; }
                        
@@ -62,14 +63,16 @@ namespace Handyman
                        catch (Exception ex) { Util.LogError(ex); }
 
                    } // endof foreach world object
-                   Util.WriteToChat("equiptowield.count " + equipToWield.Count.ToString());
-                   if (equipToWield.Count > 0)
+                   if (equipToRemove.Count > 0)
                    {
                        equipmentWielded = 0;
                        msub = "remove";
+                       equipmentCount = equipToRemove.Count;
                        equipItems();
+                       equipTime = DateTime.Now;
+
                    }
-                   else if (msecondarysubRoutine.Contains("PrepareforRest")) { Util.WriteToChat("I am going to add clothes."); prepareRestingBot(); }
+                   else if (msecondarysubRoutine.Contains("PrepareforRest")) {  prepareRestingBot(); }
                   }
                catch (Exception ex) { Util.LogError(ex); }
 
@@ -82,7 +85,6 @@ namespace Handyman
            {
                equipToWield = new List<int>();
                equipmentWielded = 0;
-               Util.WriteToChat("I am in function to equip outfit. Chatcmd: " + chatCmd);
                if(msecondarysubRoutine.Contains("EquiptheBot"))
                {
                IEnumerable<XElement> eq = null;
@@ -137,8 +139,7 @@ namespace Handyman
                        {
                            item = Convert.ToInt32(el.Value);
                            equipToWield.Add(item);
-                       //    Util.WriteToChat(item.ToString());
-                       }
+                             }
 
                    }
                }
@@ -147,6 +148,10 @@ namespace Handyman
                    if (equipToWield.Count > 0)
                    {
                        equipmentWielded = 0;
+                       equipmentCount = equipToWield.Count;
+                       equipTime = DateTime.Now;
+
+
                        equipItems();
                        // Core.Actions.UseItem(myFocusingStone, 0);
  
@@ -165,8 +170,7 @@ namespace Handyman
        {
            try
            {
-               equipmentCount = equipToWield.Count;
- 
+              // equipmentCount = equipToWield.Count;
                    CoreManager.Current.RenderFrame += new EventHandler<EventArgs>(RenderFrame_Equip);
 
            }
@@ -177,49 +181,47 @@ namespace Handyman
        {
            try
            {
-               if(msecondarysubRoutine.Contains("EquipforRest")){doEquipforRest();}
-               else
-               {
+               if (msecondarysubRoutine == "") {CoreManager.Current.RenderFrame -= new EventHandler<EventArgs>(RenderFrame_Equip); return;}
 
-               int id = 0;
-               if ((DateTime.Now - equipTime).TotalSeconds >  30 * (equipmentWielded+1) && equipToWield.Count > equipmentWielded)
+              if ((DateTime.Now - equipTime).TotalSeconds >  30 * (equipmentWielded+1)); //&& (equipToWield.Count > equipmentWielded || equipToRemove.Count > equipmentWielded) )
                {
-                   if (equipmentCount > equipmentWielded) { id = equipToWield[equipmentWielded]; }
-                
+                 if(msecondarysubRoutine.Contains("EquipforRest")){ doEquipforRest();}
 
-               //  Util.WriteToChat("I am in the function to equip. msub = " + msub + " id = " + id.ToString());
-                   if(msub.Contains("equip")){doTheEquip(id);}
-                   else if(msub.Contains("remove")){doTheRemove(id);}
-                //   if (msub == "") { return; }
-               }
-               }
+
+                  else if (msub.Contains("equip")) {  doTheEquip(); }
+                   else if(msub.Contains("remove")){doTheRemove();}
+                }
            }
            catch (Exception ex) { Util.LogError(ex); }
 
        }
 
-       private void doTheEquip(int item)
+       private void doTheEquip()
         {
-           try{
-              // Util.WriteToChat("I am in id<0 and msub = " + msub);
-               // if (msub == "equip") { Util.WriteToChat("I am ready to equipitem"); Core.Actions.AutoWield(item); }
-                  if (msub == "equip") 
+           try                      
+
+           {
+               CoreManager.Current.RenderFrame -= new EventHandler<EventArgs>(RenderFrame_Equip);
+
+               int item = 0;
+               WorldObject obj;
+                   if (msub == "equip")
+                  {
+                      if (equipmentCount > equipmentWielded) { item = equipToWield[equipmentWielded]; }
                   
-                      // Util.WriteToChat("I am ready to equipitem");
                       if (item == myFocusingStone && focusingObj.Values(LongValueKey.Slot) != -1) { Core.Actions.UseItem(item, 0); }
                       else { Core.Actions.UseItem(item, 0); }
-                      foreach (WorldObject obj in botEquip)
+                       for(int i = 0;i<botEquip.Count;i++)
                       {
+                         
+                           obj = botEquip[i];
+                          
                           if ((obj.Id == item) && (obj.Values(LongValueKey.Slot) == -1)) 
                           {
-                              CoreManager.Current.RenderFrame -= new EventHandler<EventArgs>(RenderFrame_Equip);
-
-                              equipmentWielded++; 
-                              Util.WriteToChat("Equipmentwielded " + equipmentWielded.ToString());
-                              if (equipmentWielded == equipmentCount )
+                               equipmentWielded++; 
+                               if (equipmentWielded == equipmentCount )
                               {
                                    CoreManager.Current.RenderFrame -= new EventHandler<EventArgs>(RenderFrame_Equip);
-                                   Util.WriteToChat("I have wielded all Material.");
                                    msecondarysubRoutine = "";
                                   msubRoutine = "";
                                   equipToWield.Clear();
@@ -227,49 +229,62 @@ namespace Handyman
                                   msub = "";
                                   if (chatCmd.Length > 0) { mroutine = "readyfortrade"; }
                                   else { mroutine = ""; }
+                                  
                               }
-                         
-                          else
-                          {
-                              CoreManager.Current.RenderFrame += new EventHandler<EventArgs>(RenderFrame_Equip);
-                          }
+                              else{ CoreManager.Current.RenderFrame += new EventHandler<EventArgs>(RenderFrame_Equip);}
 
-                      }//endof foreach
-                  }//EndOf msub = equip
+                          }
+                      }//endof for i= 0
+                      if (msub == "equip") { CoreManager.Current.RenderFrame += new EventHandler<EventArgs>(RenderFrame_Equip); }
+                   }//EndOf msub = equip
            }
            catch (Exception ex) { Util.LogError(ex); }
        }
 
-           private void doTheRemove(int item)
+           private void doTheRemove()
            {
                try{
-                if (msub == "remove") 
-                  {
-                //    Util.WriteToChat("I am in function to remove item and msub: " + msub);
-                    Core.Actions.MoveItem(item, Core.CharacterFilter.Id, 0, false);
-                    foreach (WorldObject obj in botEquip)
-                    {
-                        if ((obj.Id == item) && (obj.Values(LongValueKey.Slot) != -1))
-                        {
-                            equipmentWielded++;
-                            Util.WriteToChat("equipmentWielded: " + equipmentWielded.ToString() + "; equipToWield.Count: " + equipToWield.Count.ToString());
-                            if (equipmentWielded == equipToWield.Count)
-                            {
-                                CoreManager.Current.RenderFrame -= new EventHandler<EventArgs>(RenderFrame_Equip);
-                                Util.WriteToChat("I have removed all items and equipmentWielded = " + equipmentWielded.ToString());
-                                msub = "";
-                                equipmentWielded = 0;
+                   CoreManager.Current.RenderFrame -= new EventHandler<EventArgs>(RenderFrame_Equip);
 
-                                equipToWield.Clear();
-                                botEquip.Clear();
-                                Util.WriteToChat("msecondarysubroutine " + msecondarysubRoutine + "; chatCmd " + chatCmd);
-                                if (msecondarysubRoutine.Contains("EquiptheBot")) { msub = "equip"; EquipOutfit(); }
-                                else if (msecondarysubRoutine.Contains("PrepareforRest")) { prepareRestingBot(); }
-                             }
-                        }
-                    } //end foreach
-                 
-                } //end else if remove
+                   int item = 0;
+                   WorldObject obj;
+                   if (msub == "remove")
+                   {
+                      if (equipmentCount > equipmentWielded) { item = equipToRemove[equipmentWielded]; }
+
+
+                       Core.Actions.MoveItem(item, Core.CharacterFilter.Id, 0, false);
+                       //     foreach (WorldObject obj in botRemove)
+                       for (int i = 0; i < botRemove.Count; i++)
+                       {
+
+                           obj = botRemove[i];
+                           if ((obj.Id == item) && (obj.Values(LongValueKey.Slot) != -1))
+                           {
+                               equipmentWielded++;
+                               if (equipmentWielded == equipToRemove.Count)
+                               {
+                                   // CoreManager.Current.RenderFrame -= new EventHandler<EventArgs>(RenderFrame_Equip);
+                                   msub = "";
+                                   equipmentWielded = 0;
+
+                                   equipToRemove.Clear();
+                                   botRemove.Clear();
+                                   if (msecondarysubRoutine.Contains("EquiptheBot")) { msub = "equip"; EquipOutfit(); }
+                                   else if (msecondarysubRoutine.Contains("PrepareforRest")) { prepareRestingBot(); }
+                               }
+                               else
+                               {
+                                   CoreManager.Current.RenderFrame += new EventHandler<EventArgs>(RenderFrame_Equip);
+                               }
+
+                           }
+                       }//end of for int i
+                       if(msub == "remove"){CoreManager.Current.RenderFrame += new EventHandler<EventArgs>(RenderFrame_Equip);}
+ 
+                   }//end of if msub == remove
+                   
+
            }
            catch (Exception ex) { Util.LogError(ex); }
 
@@ -277,11 +292,13 @@ namespace Handyman
 
            private void doEquipforRest()
            {
+               try{
+                   CoreManager.Current.RenderFrame -= new EventHandler<EventArgs>(RenderFrame_Equip);
                Core.Actions.UseItem(item, 0);
                 if (oIdleOutfit.Values(LongValueKey.Slot) == -1)
                           {
-                                  CoreManager.Current.RenderFrame -= new EventHandler<EventArgs>(RenderFrame_Equip);
-                                    msecondarysubRoutine = "";
+
+                              msecondarysubRoutine = "";
                                   msubRoutine = "";
                                   equipToWield.Clear();
                                   msub = "";
@@ -290,8 +307,11 @@ namespace Handyman
                          
                           else
                           {
+
                               CoreManager.Current.RenderFrame += new EventHandler<EventArgs>(RenderFrame_Equip);
                           }
+               }
+               catch (Exception ex) { Util.LogError(ex); }
 
            }
 
@@ -299,13 +319,18 @@ namespace Handyman
        {
           try 
           {
-              Util.WriteToChat("I am in function prepareRestingBot");
               equipToWield.Clear();
+              equipToWield = new List<int>();
+              botEquip.Clear();
+              botEquip = new List<WorldObject>();
                msub = "equip";
                chatCmd = "";
                item = idleOutfit;
+               botEquip.Add(oIdleOutfit);
                equipToWield.Add(item);
                equipmentWielded = 0;
+               equipTime = DateTime.Now;
+
                msecondarysubRoutine = "EquipforRest";
                equipItems();
            }
