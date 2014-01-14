@@ -26,7 +26,7 @@ namespace Handyman
     public partial class PluginCore
     {
         WindowsTimer enhanceTimer = new WindowsTimer();
-  
+
         private bool bRareinUse;
         private bool bSmithyinUse;  //armor tinking by 250
         private bool bImbuerinUse;  //magic item
@@ -45,13 +45,17 @@ namespace Handyman
         private bool bHunterinUse = false; //Endurance + 50
         private bool bKetnaninUse = false; //Focus beer + 50
         private bool bSpellsinUse = false; //adja's blessing
+        private bool bMasterTinker = false; //all 5 tinking pieces + 19
+        private bool bJourneyTinker = false; //4 tinking pieces
+        private bool bApprenticeTinker = false; //3 tinking pieces
+        private bool bNoviceTinker = false; //2 tinking pieces
         private bool charmedSmith; //5% chance of Imbue 
         private int ciandraFortune = 0; //25% extra salvage material;
         private int tinkerCount = 0; //number of times tinked
         private int tinkWork = 0;
         private int tinkTinked = 0;
         private double ChanceofSuccess = 0.0;
-        private double work;
+        private double salvageWork;
         private int skill;
         private int num = 0;
         private int num2 = 0;
@@ -75,14 +79,15 @@ namespace Handyman
 
         public void checkEnhancements()
         {
-            try{
+            try
+            {
                 int spellCount = Core.CharacterFilter.Enchantments.Count;
-                Util.WriteToChat("Number of active enchantments: " + spellCount.ToString());
+              //  Util.WriteToChat("Number of active enchantments: " + spellCount.ToString());
                 for (int i = 0; i < spellCount; i++)
                 {
                     int spellid = Core.CharacterFilter.Enchantments[i].SpellId;
                     int timeleft = Core.CharacterFilter.Enchantments[i].TimeRemaining;
-                //    Util.WriteToChat(timeleft.ToString());
+                    //    Util.WriteToChat(timeleft.ToString());
                     switch (spellid)
                     {
                         case 3530:
@@ -95,12 +100,25 @@ namespace Handyman
                             break;
                         case 3863:
                             bHunterinUse = true;
-                           if (timeleft < 300) { bHunterinUse = false; }
+                            if (timeleft < 300) { bHunterinUse = false; }
                             break;
                         case 3533:
                             bBrighteyesinUse = true;
-                           if (timeleft < 300) { bBrighteyesinUse = false; }
-                             break;
+                            if (timeleft < 300) { bBrighteyesinUse = false; }
+                            break;
+                        case 4899:
+                            bMasterTinker = true;
+                            break;
+                        case 4794:
+                            bJourneyTinker = true;
+                            break;
+                        case 4793:
+                            bApprenticeTinker = true;
+                            break;
+                        case 4792:
+                            bNoviceTinker = true;
+                            break;
+                            
                         //case 4530:
                         //     bSpellsinUse = true;
                         //     if (timeleft < 300) { bSpellsinUse = false; }
@@ -108,45 +126,12 @@ namespace Handyman
                         default:
                             break;
                     }
-              }
-                Util.WriteToChat("Ketman: " + bKetnaninUse.ToString() + "; Zongo: " + bZongoinUse.ToString() + "; Hunter: " + bHunterinUse.ToString());
- 
-//                private void TimeLeft(int spId)
-//{
-//   int timer = 0;
-//   foreach(int i in Core.CharacterFilter.Enchantments.Count)
-//   {
-//      if(Core.CharacterFilter.Enchantments[i].SpellId == spId)
-//      {
-//         if(Core.CharacterFilter.Enchantments[i].TimeRemaining > Timer)
-//         {
-//            Timer = Core.CharacterFilter.Enchantments[i].TimeRemaining;
-//         }
-//      }
-//   }
-//}
-        //      for (int i = 0;i<spellCount;i++)
-          ////  foreach (int spellId in Core.CharacterFilter.SpellBook)
-          //  {
-
-          //     // Spell s = fs.SpellTable.GetById(spellId);
-          //      spellID = s.Id;
-          //       spellName = s.Name;
-          //       if (spellID == 3530) { bKetnaninUse = true; }  //focus  -2142578610  TuskerSpitAle
-          //       if (spellID == 3864) { bZongoinUse = true; }  //strength  -2147193651  Strength
-          //       if (spellID == 3863) { bHunterinUse = true; } //endurance  -2147193657  Endurance
-          //       if (spellID == 3533) { bBrighteyesinUse = true; }  //coord  AmberApe -2142578611
-          //       //    if (spellName.Contains("Ketnan's Blessing")) { bKetnaninUse = true; }  //focus  -2142578610  TuskerSpitAle
-          //   //    if (spellName.Contains("Brighteyes")) { bBrighteyesinUse = true; }  //coord  AmberApe -2142578611
-          //   //    if (spellName.Contains("Hunter")) { bHunterinUse = true; } //endurance  -2147193657  Endurance
-          //   //    if (spellName.Contains("Zongo")) { bZongoinUse = true; }  //strength  -2147193651  Strength
-          //   //    if (spellName.Contains("Adja") || spellName.Contains("Incantation")) { bSpellsinUse = true; }
-          //   ////    if(chatCmd != "Salvage"){ CoreManager.Current.Actions.UseItem(-2142578610, 0); }
-          //       Util.WriteToChat("Ketman: " + bKetnaninUse.ToString() + "; Zongo: " + bZongoinUse.ToString() + "; Spells: " + bSpellsinUse.ToString());
-          //  }
+                }
+              //  Util.WriteToChat("Ketman: " + bKetnaninUse.ToString() + "; Zongo: " + bZongoinUse.ToString() + "; Hunter: " + bHunterinUse.ToString());
+              //  Util.WriteToChat("bMasterTinker: " + bMasterTinker.ToString());
             }
             catch (Exception ex) { Util.LogError(ex); }
- 
+
         }
 
 
@@ -154,6 +139,7 @@ namespace Handyman
 
         public void useEnhancement()
         {
+            //  Util.WriteToChat("I am in useEnhancement");
             UseEnhance = DateTime.Now;
             Core.RenderFrame += new EventHandler<EventArgs>(RenderFrame_doEnhance);
 
@@ -161,20 +147,22 @@ namespace Handyman
 
         private void RenderFrame_doEnhance(object sender, EventArgs e)
         {
-            try{
-            if (bDrankBeer )
+            try
             {
-                Util.WriteToChat("msecondarysubroutine " + msecondarysubRoutine);
-                Core.RenderFrame -= RenderFrame_doEnhance;
-                if (msecondarysubRoutine.Contains("GetFocus")) { msecondarysubRoutine = "GeneralBeers"; checkBeers(); }
-                else if (msecondarysubRoutine.Contains("GeneralBeers")) { msecondarysubRoutine = "EquiptheBot"; clearBotOutfit(); }
-                //   moveToBotChores();
+                //  Util.WriteToChat("I am in renderframe_doenhance");
+                if (bDrankBeer)
+                {
+                  //  Util.WriteToChat("msecondarysubroutine " + msecondarysubRoutine);
+                    Core.RenderFrame -= RenderFrame_doEnhance;
+                    if (msecondarysubRoutine.Contains("GetFocus")) { msecondarysubRoutine = "GeneralBeers"; checkBeers(); }
+                    else if (msecondarysubRoutine.Contains("GeneralBeers")) { msecondarysubRoutine = "EquiptheBot"; clearBotOutfit(); }
+                    //   moveToBotChores();
 
-            }
-            else if(((DateTime.Now - UseEnhance).TotalSeconds > 10) && !bDrankBeer)
-            {
-                UseBeers();
-            }
+                }
+                else if (((DateTime.Now - UseEnhance).TotalSeconds > 10) && !bDrankBeer)
+                {
+                    UseBeers();
+                }
 
             }
             catch (Exception ex) { Util.LogError(ex); }
@@ -183,282 +171,304 @@ namespace Handyman
 
         private void UseBeers()
         {
-            try{
-            Core.Actions.UseItem(beer, 0);
+            try
+            {
+
+                Core.Actions.UseItem(beer, 0);
             }
             catch (Exception ex) { Util.LogError(ex); }
         }
 
+        //public void ChanceofSuccess()
+        //{
 
+        //}
 
         public void getChanceofSuccess()
         {
+          //  Util.WriteToChat("I have just entered chance of success.");
             try
             {
-               // Core.CharFilterAttributeType
-            //    if(Core.CharacterFilter.Enchantments[
-                 if (bCalcMajors)
-                {
-                    num += 30;
-                    num2 += 30;
-                    num3 += 30;
-                    num4 += 30;
-                    num5 += 0x19;
-                    num6 += 0x19;
-                    num7 += 0x19;
-                    num8 += 0x19;
-                }
-                if (bArtisanPet)
-                {
-                    num5 += 30;
-                    num6 += 30;
-                    num7 += 30;
-                    num8 += 30;
-                }
-                else if (bMasterPet)
-                {
-                    num5 += 20;
-                    num6 += 20;
-                    num7 += 20;
-                    num8 += 20;
-                }
-                else if (bJourneymanPet)
-                {
-                    num5 += 10;
-                    num6 += 10;
-                    num7 += 10;
-                    num8 += 10;
-                }
-                if (TrdObjects!=null)
-                //??    bool flag = false;
-                    foreach (WorldObject obj2 in TrdObjects)
-                    {
-                        if (obj2.Name.Equals("Smithy's Crystal") || bSmithyinUse)
-                        {
-                            num += 250;
-                            bSmithyinUse = true;
-                        }
-                        else if (obj2.Name.Equals("Tinker's Crystal") || bTinkerinUse)
-                        {
-                            num2 += 250;
-                            bTinkerinUse = true;
-                        }
-                        else if (obj2.Name.Equals("Imbuer's Crystal") || bImbuerinUse)
-                        {
-                            num3 += 250;
-                            bImbuerinUse = true;
-                        }
-                        else if (obj2.Name.Equals("Artist's Crystal") || bArtistinUse)
-                        {
-                            num4 += 250;
-                            bArtistinUse = true;
-                        }
-                        else if (obj2.Name.Equals("Alchemist's Crystal") || bAlchemistinUse)
-                        {
-                            num6 += 250;
-                            bAlchemistinUse = true;
-                        }
-                        else if (obj2.Name.Equals("Chef's Crystal") || bCookinginUse)
-                        {
-                            num7 += 250;
-                            bCookinginUse = true;
-                        }
-                        else if (obj2.Name.Equals("Fletcher's Crystal") || bFletchinginUse)
-                        {
-                            num8 += 250;
-                            bFletchinginUse = true;
-                        }
-                        else if (obj2.Name.Equals("Thief's Crystal") || bLockpickinUse)
-                        {
-                            num5 += 250;
-                            bLockpickinUse = true;
-                        }
-                        else if (obj2.Name.Equals("Lugian's Pearl") || bLugianinUse)
-                        {
-                            num4 += 0x7d;
-                            bLugianinUse = true;
-                        }
-                        else if (obj2.Name.Equals("Ursuin's Pearl") || bUrsuininUse)
-                        {
-                            num += 0x7d;
-                            bUrsuininUse = true;
-                        }
-                        else if (obj2.Name.Equals("Wayfarer's Pearl") || bWayfarerinUse)
-                        {
-                            num2 += 0x7d;
-                            num6 += 0x53;
-                            num7 += 0x53;
-                            num8 += 0x53;
-                            num5 += 0x53;
-                            bWayfarerinUse = true;
-                        }
-                        else if (obj2.Name.Equals("Magus's Pearl") || bMagusinUse)
-                        {
-                            num += 0x7d;
-                            num2 += 0x7d;
-                            num3 += 250;
-                            num4 += 250;
-                            num6 += 0x53;
-                            num7 += 0x53;
-                            num8 += 0x53;
-                            num5 += 0x53;
-                            bMagusinUse = true;
-                        }
-                        //else if (obj2.Name.Equals("Tusker Spit Ale") || bTuskerSpitinUse)
-                        //{
-                        //    num += 5;
-                        //    num2 += 5;
-                        //    num3 += 10;
-                        //    num4 += 5;
-                        //    num6 += 3;
-                        //    num7 += 3;
-                        //    num8 += 3;
-                        //    num5 += 3;
-                        //    bTuskerSpitinUse = true;
-                        //}
-                        //else if (obj2.Name.Equals("Amber Ape") || bAmberApeinUse)
-                        //{
-                        //    num2 += 5;
-                        //    num6 += 3;
-                        //    num7 += 3;
-                        //    num8 += 3;
-                        //    num5 += 3;
-                        //    bAmberApeinUse = true;
-                        //}
-                        else if (obj2.Name.Equals("Apothecary Zongo's Stout") || bZongoinUse)
-                        {
-                            num4 += 5;
-                            bZongoinUse = true;
-                        }
-                        else if (obj2.Name.Equals("Hunter's Stock Amber") || bHunterinUse)
-                        {
-                            num += 5;
-                            bHunterinUse = true;
-                        }
-                    }
-                
-                     if ((chatCmd.Equals("Armor") || chatCmd.Equals("Item")) || (chatCmd.Equals("MagicItem") || chatCmd.Equals("Weapon")) && TinkObject != null && Salvages !=null)
-                     {
-                         if (Salvages != null)
-                         {
-                             int numSalvages = Salvages.Count;
-                             if (numSalvages > 0)
-                             {
-                                 foreach (WorldObject salvage in Salvages)
-                                 {
+                // Core.CharFilterAttributeType
+                //    if(Core.CharacterFilter.Enchantments[
+                //         if (bCalcMajors)
+                //        {
+                //            num += 30;
+                //            num2 += 30;
+                //            num3 += 30;
+                //            num4 += 30;
+                //            num5 += 0x19;
+                //            num6 += 0x19;
+                //            num7 += 0x19;
+                //            num8 += 0x19;
+                //        }
+                //        if (bArtisanPet)
+                //        {
+                //            num5 += 30;
+                //            num6 += 30;
+                //            num7 += 30;
+                //            num8 += 30;
+                //        }
+                //        else if (bMasterPet)
+                //        {
+                //            num5 += 20;
+                //            num6 += 20;
+                //            num7 += 20;
+                //            num8 += 20;
+                //        }
+                //        else if (bJourneymanPet)
+                //        {
+                //            num5 += 10;
+                //            num6 += 10;
+                //            num7 += 10;
+                //            num8 += 10;
+                //        }
+                //        if (TrdObjects!=null)
+                //        //??    bool flag = false;
+                //            foreach (WorldObject obj2 in TrdObjects)
+                //            {
+                //                if (obj2.Name.Equals("Smithy's Crystal") || bSmithyinUse)
+                //                {
+                //                    num += 250;
+                //                    bSmithyinUse = true;
+                //                }
+                //                else if (obj2.Name.Equals("Tinker's Crystal") || bTinkerinUse)
+                //                {
+                //                    num2 += 250;
+                //                    bTinkerinUse = true;
+                //                }
+                //                else if (obj2.Name.Equals("Imbuer's Crystal") || bImbuerinUse)
+                //                {
+                //                    num3 += 250;
+                //                    bImbuerinUse = true;
+                //                }
+                //                else if (obj2.Name.Equals("Artist's Crystal") || bArtistinUse)
+                //                {
+                //                    num4 += 250;
+                //                    bArtistinUse = true;
+                //                }
+                //                else if (obj2.Name.Equals("Alchemist's Crystal") || bAlchemistinUse)
+                //                {
+                //                    num6 += 250;
+                //                    bAlchemistinUse = true;
+                //                }
+                //                else if (obj2.Name.Equals("Chef's Crystal") || bCookinginUse)
+                //                {
+                //                    num7 += 250;
+                //                    bCookinginUse = true;
+                //                }
+                //                else if (obj2.Name.Equals("Fletcher's Crystal") || bFletchinginUse)
+                //                {
+                //                    num8 += 250;
+                //                    bFletchinginUse = true;
+                //                }
+                //                else if (obj2.Name.Equals("Thief's Crystal") || bLockpickinUse)
+                //                {
+                //                    num5 += 250;
+                //                    bLockpickinUse = true;
+                //                }
+                //                else if (obj2.Name.Equals("Lugian's Pearl") || bLugianinUse)
+                //                {
+                //                    num4 += 0x7d;
+                //                    bLugianinUse = true;
+                //                }
+                //                else if (obj2.Name.Equals("Ursuin's Pearl") || bUrsuininUse)
+                //                {
+                //                    num += 0x7d;
+                //                    bUrsuininUse = true;
+                //                }
+                //                else if (obj2.Name.Equals("Wayfarer's Pearl") || bWayfarerinUse)
+                //                {
+                //                    num2 += 0x7d;
+                //                    num6 += 0x53;
+                //                    num7 += 0x53;
+                //                    num8 += 0x53;
+                //                    num5 += 0x53;
+                //                    bWayfarerinUse = true;
+                //                }
+                //                else if (obj2.Name.Equals("Magus's Pearl") || bMagusinUse)
+                //                {
+                //                    num += 0x7d;
+                //                    num2 += 0x7d;
+                //                    num3 += 250;
+                //                    num4 += 250;
+                //                    num6 += 0x53;
+                //                    num7 += 0x53;
+                //                    num8 += 0x53;
+                //                    num5 += 0x53;
+                //                    bMagusinUse = true;
+                //                }
+                //                //else if (obj2.Name.Equals("Tusker Spit Ale") || bTuskerSpitinUse)
+                //                //{
+                //                //    num += 5;
+                //                //    num2 += 5;
+                //                //    num3 += 10;
+                //                //    num4 += 5;
+                //                //    num6 += 3;
+                //                //    num7 += 3;
+                //                //    num8 += 3;
+                //                //    num5 += 3;
+                //                //    bTuskerSpitinUse = true;
+                //                //}
+                //                //else if (obj2.Name.Equals("Amber Ape") || bAmberApeinUse)
+                //                //{
+                //                //    num2 += 5;
+                //                //    num6 += 3;
+                //                //    num7 += 3;
+                //                //    num8 += 3;
+                //                //    num5 += 3;
+                //                //    bAmberApeinUse = true;
+                //                //}
+                //                else if (obj2.Name.Equals("Apothecary Zongo's Stout") || bZongoinUse)
+                //                {
+                //                    num4 += 5;
+                //                    bZongoinUse = true;
+                //                }
+                //                else if (obj2.Name.Equals("Hunter's Stock Amber") || bHunterinUse)
+                //                {
+                //                    num += 5;
+                //                    bHunterinUse = true;
+                //                }
+                //            }
 
-                               //      string str = salvage.Name;
-                                     work = (double)salvage.Values(DoubleValueKey.SalvageWorkmanship);
-                                 }
+                //             if ((chatCmd.Equals("Armor") || chatCmd.Equals("Item")) || (chatCmd.Equals("MagicItem") || chatCmd.Equals("Weapon")) && TinkObject != null && Salvages !=null)
+                //             {
+                //                 if (Salvages != null)
+                //                 {
+                //                     int numSalvages = Salvages.Count;
+                //                     if (numSalvages > 0)
+                //                     {
+                //                         foreach (WorldObject salvage in Salvages)
+                //                         {
 
-                             }
-                         }
-                         tinkWork = (int)TinkObject.Values(LongValueKey.Workmanship);
-                         tinkerCount = (int)TinkObject.Values(LongValueKey.NumberTimesTinkered);
-                         getEffectiveSkill();
-                    //     ChanceofSuccess = calculateDifficulty(tinkWork, work,tinkerCount,skill);
-                     }
-            
-        }          catch (Exception ex) { Util.LogError(ex); }
+                //                       //      string str = salvage.Name;
+                //                             work = (double)salvage.Values(DoubleValueKey.SalvageWorkmanship);
+                //                         }
+
+                //                     }
+                //                 }
+
+                Util.WriteToChat("otinkobj: " + otinkobj.Name);
+                tinkWork = (int)otinkobj.Values(LongValueKey.Workmanship);
+                tinkerCount = (int)otinkobj.Values(LongValueKey.NumberTimesTinkered);
+                 salvageWork = (double)osalvageobj.Values(DoubleValueKey.SalvageWorkmanship);
+                 Util.WriteToChat("tinkerCount: " + tinkerCount.ToString() + ", tinkWork: " + tinkWork.ToString() + ", salvageWork: " + salvageWork.ToString() );
+
+                getEffectiveSkill();
+                Util.WriteToChat("Effective skill: " + skill.ToString());
+               // ChanceofSuccess = calculateDifficulty(tinkWork, salvageWork, tinkerCount, skill);
+                calculateDifficulty(tinkWork, salvageWork, tinkerCount, skill);
+                //             }
+
+            }
+            catch (Exception ex) { Util.LogError(ex); }
         }
 
         private void getEffectiveSkill()
         {
-
-            switch(chatCmd)
+            try{
+            //   Util.WriteToChat("master tinking skill: " + bMasterTinker.ToString());
+            switch (chatCmd)
             {
                 case "Armor":
-                    skill = base.Core.CharacterFilter.EffectiveSkill[CharFilterSkillType.ArmorTinkering] + 0x19 + num;
+                    skill = base.Core.CharacterFilter.EffectiveSkill[CharFilterSkillType.ArmorTinkering];  // +0x19; //+ num;
+                    break;
+                case "Weapon":
+                    skill = base.Core.CharacterFilter.EffectiveSkill[CharFilterSkillType.WeaponTinkering];// + 0x19 + num;
                     break;
 
             }
+            if (bMasterTinker) { skill = skill + 19; }
+            }
+            catch (Exception ex) { Util.LogError(ex); }
+ 
         }
 
- //       public double calculateDifficulty(bool imbue, bool charmedSmith, int salvageType, int itemWork, double salvageQuality, int tinkerNum, int skill)
-        //public double calculateDifficulty(int tinkWork, double work, int tinkerCount, int skill)
-        //{
-        //    if (((itemWork <= 0) || (itemWork > 10)) || ((tinkerNum < 0) || (tinkerNum > 10)))
-        //    {
-        //        clsMessageWriter.Write_Split_Message(debugFile, string.Concat(new object[] { "Out of bounds! Returning a negative tinker value. Debug: itemWork:", itemWork, " tinkerNum: ", tinkerNum }));
-        //        return -1.0;
-        //    }
-        //    double num = 0.0;
-        //    switch (tinkerNum)
-        //    {
-        //        case 0:
-        //            num = 1.0;
-        //            break;
+        //       public double calculateDifficulty(bool imbue, bool charmedSmith, int salvageType, int itemWork, double salvageQuality, int tinkerNum, int skill)
+        public void calculateDifficulty(int tinkWork, double work, int tinkerCount, int skill)
+        {
+          //  Util.WriteToChat("I have just entered calculate difficulty");
+            try
+            {
+                //if (((itemWork <= 0) || (itemWork > 10)) || ((tinkerNum < 0) || (tinkerNum > 10)))
+                //{
+                //    clsMessageWriter.Write_Split_Message(debugFile, string.Concat(new object[] { "Out of bounds! Returning a negative tinker value. Debug: itemWork:", itemWork, " tinkerNum: ", tinkerNum }));
+                //    return -1.0;
+                //}
+                double num = 0.0;
+                double num4 = 0.0;
+                switch (tinkerCount)
+                {
+                    case 0:
+                        num = 1.0;
+                        break;
 
-        //        case 1:
-        //            num = 1.0;
-        //            break;
+                    case 1:
+                        num = 1.0;
+                        break;
 
-        //        case 2:
-        //            num = 1.1;
-        //            break;
+                    case 2:
+                        num = 1.1;
+                        break;
 
-        //        case 3:
-        //            num = 1.3;
-        //            break;
+                    case 3:
+                        num = 1.3;
+                        break;
 
-        //        case 4:
-        //            num = 1.6;
-        //            break;
+                    case 4:
+                        num = 1.6;
+                        break;
 
-        //        case 5:
-        //            num = 2.0;
-        //            break;
+                    case 5:
+                        num = 2.0;
+                        break;
 
-        //        case 6:
-        //            num = 2.5;
-        //            break;
+                    case 6:
+                        num = 2.5;
+                        break;
 
-        //        case 7:
-        //            num = 3.0;
-        //            break;
+                    case 7:
+                        num = 3.0;
+                        break;
 
-        //        case 8:
-        //            num = 3.5;
-        //            break;
+                    case 8:
+                        num = 3.5;
+                        break;
 
-        //        case 9:
-        //            num = 4.0;
-        //            break;
+                    case 9:
+                        num = 4.0;
+                        break;
 
-        //        case 10:
-        //            num = 4.5;
-        //            break;
+                    case 10:
+                        num = 4.5;
+                        break;
 
-        //        default:
-        //            clsMessageWriter.Write_Split_Message(debugFile, "Default case found for tinker success!");
-        //            num = 1.0;
-        //            break;
-        //    }
-        //    int num2 = 0;
-        //    if (salvageQuality < itemWork)
-        //    {
-        //        num2 = 1;
-        //    }
-        //    else
-        //    {
-        //        num2 = 2;
-        //    }
-        //    double num3 = Math.Floor((double)((((5 * salvageType) + ((2 * itemWork) * salvageType)) - (((salvageQuality * num2) * salvageType) / 5.0)) * num));
-        //    double num4 = Math.Floor((double)((1.0 - (1.0 / (1.0 + Math.Exp(0.03 * (skill - num3))))) * 100.0));
-        //    if (imbue)
-        //    {
-        //        num4 = Math.Ceiling((double)(num4 / 3.0));
-        //        if (charmedSmith)
-        //        {
-        //            num4 += 5.0;
-        //        }
-        //        if (num4 > 38.0)
-        //        {
-        //            num4 = 38.0;
-        //        }
-        //    }
-        //    return num4;
-        //}
+                    default:
+                        //  clsMessageWriter.Write_Split_Message(debugFile, "Default case found for tinker success!");
+                        num = 1.0;
+
+                        break;
+                }
+                int num2 = 0;
+                if (salvageWork < (double)tinkWork)
+                {
+                    num2 = 1;
+                }
+                else
+                {
+                    num2 = 2;
+                }
+                //double num3 = Math.Floor((double)((((5 * salvageType) + ((2 * tinkwork) * salvageType)) - (((salvageQuality * num2) * salvageType) / 5.0)) * num));
+                double num3 = Math.Floor((double)(((2 * tinkWork) - (salvageWork * num2)) / 5.0) * num);
+                num4 = Math.Floor((double)((1.0 - (1.0 / (1.0 + Math.Exp(0.03 * (skill - num3))))) * 100.0));
+                Util.WriteToChat("num: " + num.ToString() + ", num2: " + num2.ToString() + ", num3: " + num3.ToString());
+                ChanceofSuccess = num4;
+            }
+            catch (Exception ex) { Util.LogError(ex); }
+
+        }
+    }
+}
 
 
         //            //                switch (str)
@@ -1158,5 +1168,56 @@ namespace Handyman
 
  
 
-    }
-}
+    
+
+    
+//Commented out code
+//                private void TimeLeft(int spId)
+//{
+//   int timer = 0;
+//   foreach(int i in Core.CharacterFilter.Enchantments.Count)
+//   {
+//      if(Core.CharacterFilter.Enchantments[i].SpellId == spId)
+//      {
+//         if(Core.CharacterFilter.Enchantments[i].TimeRemaining > Timer)
+//         {
+//            Timer = Core.CharacterFilter.Enchantments[i].TimeRemaining;
+//         }
+//      }
+//   }
+//}
+        //      for (int i = 0;i<spellCount;i++)
+          ////  foreach (int spellId in Core.CharacterFilter.SpellBook)
+          //  {
+
+          //     // Spell s = fs.SpellTable.GetById(spellId);
+          //      spellID = s.Id;
+          //       spellName = s.Name;
+          //       if (spellID == 3530) { bKetnaninUse = true; }  //focus  -2142578610  TuskerSpitAle
+          //       if (spellID == 3864) { bZongoinUse = true; }  //strength  -2147193651  Strength
+          //       if (spellID == 3863) { bHunterinUse = true; } //endurance  -2147193657  Endurance
+          //       if (spellID == 3533) { bBrighteyesinUse = true; }  //coord  AmberApe -2142578611
+          //       //    if (spellName.Contains("Ketnan's Blessing")) { bKetnaninUse = true; }  //focus  -2142578610  TuskerSpitAle
+          //   //    if (spellName.Contains("Brighteyes")) { bBrighteyesinUse = true; }  //coord  AmberApe -2142578611
+          //   //    if (spellName.Contains("Hunter")) { bHunterinUse = true; } //endurance  -2147193657  Endurance
+          //   //    if (spellName.Contains("Zongo")) { bZongoinUse = true; }  //strength  -2147193651  Strength
+          //   //    if (spellName.Contains("Adja") || spellName.Contains("Incantation")) { bSpellsinUse = true; }
+          //   ////    if(chatCmd != "Salvage"){ CoreManager.Current.Actions.UseItem(-2142578610, 0); }
+          //       Util.WriteToChat("Ketman: " + bKetnaninUse.ToString() + "; Zongo: " + bZongoinUse.ToString() + "; Spells: " + bSpellsinUse.ToString());
+          //  }
+
+
+
+//    if (imbue)
+//    {
+//        num4 = Math.Ceiling((double)(num4 / 3.0));
+//        if (charmedSmith)
+//        {
+//            num4 += 5.0;
+//        }
+//        if (num4 > 38.0)
+//        {
+//            num4 = 38.0;
+//        }
+//    }
+

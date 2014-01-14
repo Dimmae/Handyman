@@ -170,6 +170,7 @@ namespace Handyman
        {
            try
            {
+             //  Util.WriteToChat("I am in equipitems");
               // equipmentCount = equipToWield.Count;
                    CoreManager.Current.RenderFrame += new EventHandler<EventArgs>(RenderFrame_Equip);
 
@@ -262,16 +263,26 @@ namespace Handyman
                            if ((obj.Id == item) && (obj.Values(LongValueKey.Slot) != -1))
                            {
                                equipmentWielded++;
+                               Util.WriteToChat("equipmentwield: " + equipmentWielded + "; equiptoremove.count " + equipToRemove.Count.ToString());
                                if (equipmentWielded == equipToRemove.Count)
                                {
-                                   // CoreManager.Current.RenderFrame -= new EventHandler<EventArgs>(RenderFrame_Equip);
+                                   try{
+                                //   Util.WriteToChat("I am in equipmentWielded == equiptoremove.count");
+                                   CoreManager.Current.RenderFrame -= new EventHandler<EventArgs>(RenderFrame_Equip);
                                    msub = "";
                                    equipmentWielded = 0;
 
                                    equipToRemove.Clear();
                                    botRemove.Clear();
+                                   Util.WriteToChat("msecondarysubroutine: " + msecondarysubRoutine);
+
                                    if (msecondarysubRoutine.Contains("EquiptheBot")) { msub = "equip"; EquipOutfit(); }
-                                   else if (msecondarysubRoutine.Contains("PrepareforRest")) { prepareRestingBot(); }
+                                   else if (msecondarysubRoutine.Contains("PrepareforRest")) {  prepareRestingBot(); }
+                                   Util.WriteToChat("I am on other side of if's in remove");
+                                   }
+
+                                   catch (Exception ex) { Util.LogError(ex); }
+
                                }
                                else
                                {
@@ -293,6 +304,7 @@ namespace Handyman
            private void doEquipforRest()
            {
                try{
+                 //  Util.WriteToChat("I am in doequpforreat");
                    CoreManager.Current.RenderFrame -= new EventHandler<EventArgs>(RenderFrame_Equip);
                Core.Actions.UseItem(item, 0);
                 if (oIdleOutfit.Values(LongValueKey.Slot) == -1)
@@ -302,7 +314,8 @@ namespace Handyman
                                   msubRoutine = "";
                                   equipToWield.Clear();
                                   msub = "";
-                                  mroutine = ""; 
+                                  mroutine = "";
+                                  return;
                               }
                          
                           else
@@ -319,6 +332,7 @@ namespace Handyman
        {
           try 
           {
+            //  Util.WriteToChat("I am in prepare resting bot.");
               equipToWield.Clear();
               equipToWield = new List<int>();
               botEquip.Clear();

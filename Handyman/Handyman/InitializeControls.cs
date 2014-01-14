@@ -153,19 +153,19 @@ namespace Handyman
 
 
         }
-        private void chkTier4Rares_Change(object sender, MyClasses.MetaViewWrappers.MVCheckBoxChangeEventArgs e)
-        {
-            try
-            {
-                bTier4Rares = e.Checked;
-                Util.WriteToChat("Tier4Rares = " + bTier4Rares);
+        //private void chkTier4Rares_Change(object sender, MyClasses.MetaViewWrappers.MVCheckBoxChangeEventArgs e)
+        //{
+        //    try
+        //    {
+        //        bTier4Rares = e.Checked;
+        //        Util.WriteToChat("Tier4Rares = " + bTier4Rares);
 
-                SaveSettings();
-            }
-            catch (Exception ex) { Util.LogError(ex); }
+        //        SaveSettings();
+        //    }
+        //    catch (Exception ex) { Util.LogError(ex); }
 
 
-        }
+       // }
 
          private void chkBuffsEnabled_Change(object sender, MyClasses.MetaViewWrappers.MVCheckBoxChangeEventArgs e)
         {
@@ -247,47 +247,47 @@ namespace Handyman
 
         }
 
-        private void chkUseWeb_Change(object sender, MyClasses.MetaViewWrappers.MVCheckBoxChangeEventArgs e)
-        {
-            try
-            {
-                bUseWeb = e.Checked;
-                Util.WriteToChat("Use Web = " + bUseWeb);
+        //private void chkUseWeb_Change(object sender, MyClasses.MetaViewWrappers.MVCheckBoxChangeEventArgs e)
+        //{
+        //    try
+        //    {
+        //        bUseWeb = e.Checked;
+        //        Util.WriteToChat("Use Web = " + bUseWeb);
 
-                SaveSettings();
-            }
-            catch (Exception ex) { Util.LogError(ex); }
-
-
-        }
-
-        private void chkEquip_Change(object sender, MyClasses.MetaViewWrappers.MVCheckBoxChangeEventArgs e)
-        {
-            try
-            {
-                bEquip = e.Checked;
-                Util.WriteToChat("Equip items = " + bEquip);
-
-                SaveSettings();
-            }
-            catch (Exception ex) { Util.LogError(ex); }
+        //        SaveSettings();
+        //    }
+        //    catch (Exception ex) { Util.LogError(ex); }
 
 
-        }
+        //}
 
-        private void chkUseCharge_Change(object sender, MyClasses.MetaViewWrappers.MVCheckBoxChangeEventArgs e)
-        {
-            try
-            {
-                bUseCharge = e.Checked;
-                Util.WriteToChat("Use Charge = " + bUseCharge);
+        //private void chkEquip_Change(object sender, MyClasses.MetaViewWrappers.MVCheckBoxChangeEventArgs e)
+        //{
+        //    try
+        //    {
+        //        bEquip = e.Checked;
+        //        Util.WriteToChat("Equip items = " + bEquip);
 
-                SaveSettings();
-            }
-            catch (Exception ex) { Util.LogError(ex); }
+        //        SaveSettings();
+        //    }
+        //    catch (Exception ex) { Util.LogError(ex); }
 
 
-        }
+        //}
+
+        ////private void chkUseCharge_Change(object sender, MyClasses.MetaViewWrappers.MVCheckBoxChangeEventArgs e)
+        //{
+        //    try
+        //    {
+        //        bUseCharge = e.Checked;
+        //        Util.WriteToChat("Use Charge = " + bUseCharge);
+
+        //        SaveSettings();
+        //    }
+        //    catch (Exception ex) { Util.LogError(ex); }
+
+
+       // }
 
         private void chkRareAllegChan_Change(object sender, MyClasses.MetaViewWrappers.MVCheckBoxChangeEventArgs e)
         {
@@ -364,59 +364,59 @@ namespace Handyman
 
 
 
-        private void chkCalcMajors_Change(object sender, MyClasses.MetaViewWrappers.MVCheckBoxChangeEventArgs e)
-        {
-            try
-            {
-                bCalcMajors = e.Checked;
-                Util.WriteToChat("Calculate Majors = " + bCalcMajors);
+        //private void chkCalcMajors_Change(object sender, MyClasses.MetaViewWrappers.MVCheckBoxChangeEventArgs e)
+        //{
+        //    try
+        //    {
+        //        bCalcMajors = e.Checked;
+        //        Util.WriteToChat("Calculate Majors = " + bCalcMajors);
 
-                SaveSettings();
-            }
-            catch (Exception ex) { Util.LogError(ex); }
-
-
-        }
-        private void chkJourneymanPet_Change(object sender, MyClasses.MetaViewWrappers.MVCheckBoxChangeEventArgs e)
-        {
-            try
-            {
-                bJourneymanPet = e.Checked;
-                Util.WriteToChat("Journeyman Pet = " + bJourneymanPet);
-
-                SaveSettings();
-            }
-            catch (Exception ex) { Util.LogError(ex); }
+        //        SaveSettings();
+        //    }
+        //    catch (Exception ex) { Util.LogError(ex); }
 
 
-        }
-        private void chkArtisanPet_Change(object sender, MyClasses.MetaViewWrappers.MVCheckBoxChangeEventArgs e)
-        {
-            try
-            {
-                bArtisanPet = e.Checked;
-                Util.WriteToChat("Artisan Pet = " + bMasterPet);
+        //}
+        //private void chkJourneymanPet_Change(object sender, MyClasses.MetaViewWrappers.MVCheckBoxChangeEventArgs e)
+        //{
+        //    try
+        //    {
+        //        bJourneymanPet = e.Checked;
+        //        Util.WriteToChat("Journeyman Pet = " + bJourneymanPet);
 
-                SaveSettings();
-            }
-            catch (Exception ex) { Util.LogError(ex); }
-
-
-        }
-
-         private void chkMasterPet_Change(object sender, MyClasses.MetaViewWrappers.MVCheckBoxChangeEventArgs e)
-        {
-            try
-            {
-                bMasterPet = e.Checked;
-                Util.WriteToChat("Master Pet = " + bMasterPet);
-
-                SaveSettings();
-            }
-            catch (Exception ex) { Util.LogError(ex); }
+        //        SaveSettings();
+        //    }
+        //    catch (Exception ex) { Util.LogError(ex); }
 
 
-        }
+        //}
+        //private void chkArtisanPet_Change(object sender, MyClasses.MetaViewWrappers.MVCheckBoxChangeEventArgs e)
+        //{
+        //    try
+        //    {
+        //        bArtisanPet = e.Checked;
+        //        Util.WriteToChat("Artisan Pet = " + bMasterPet);
+
+        //        SaveSettings();
+        //    }
+        //    catch (Exception ex) { Util.LogError(ex); }
+
+
+        //}
+
+        // private void chkMasterPet_Change(object sender, MyClasses.MetaViewWrappers.MVCheckBoxChangeEventArgs e)
+        //{
+        //    try
+        //    {
+        //        bMasterPet = e.Checked;
+        //        Util.WriteToChat("Master Pet = " + bMasterPet);
+
+        //        SaveSettings();
+        //    }
+        //    catch (Exception ex) { Util.LogError(ex); }
+
+
+        //}
 
          private void chkBuffingWand_Change(object sender, MyClasses.MetaViewWrappers.MVCheckBoxChangeEventArgs e)
          {
@@ -431,30 +431,30 @@ namespace Handyman
 
          }
 
-         private void chkSetUst_Change(object sender, MyClasses.MetaViewWrappers.MVCheckBoxChangeEventArgs e)
-         {
-             try
-             {
+         //private void chkSetUst_Change(object sender, MyClasses.MetaViewWrappers.MVCheckBoxChangeEventArgs e)
+         //{
+         //    try
+         //    {
 
-                // saveEquip(Skill, objSelectedID);
+         //       // saveEquip(Skill, objSelectedID);
 
-             }
-             catch (Exception ex) { Util.LogError(ex); }
-
-
-         }
-         private void chkSetFocusingStone_Change(object sender, MyClasses.MetaViewWrappers.MVCheckBoxChangeEventArgs e)
-         {
-             try
-             {
-
-                // saveEquip(Skill, objSelectedID);
-
-             }
-             catch (Exception ex) { Util.LogError(ex); }
+         //    }
+         //    catch (Exception ex) { Util.LogError(ex); }
 
 
-         }
+         //}
+         //private void chkSetFocusingStone_Change(object sender, MyClasses.MetaViewWrappers.MVCheckBoxChangeEventArgs e)
+         //{
+         //    try
+         //    {
+
+         //       // saveEquip(Skill, objSelectedID);
+
+         //    }
+         //    catch (Exception ex) { Util.LogError(ex); }
+
+
+         //}
 
 
 
@@ -576,16 +576,16 @@ namespace Handyman
                 chkCooking.Checked = bCooking;
                 chkLockpick.Checked = bLockpick;
                 chkFletching.Checked = bFletching;
-                chkTier4Rares.Checked = bTier4Rares;
+              //  chkTier4Rares.Checked = bTier4Rares;
                 chkBuffsEnabled.Checked = bBuffsEnabled;
                 chkBuffOnStart.Checked = bBuffOnStart;
                 chkUseBeers.Checked = bUseBeers;
                 chkUseRares.Checked = bUseRares;
                 chkUseBuffBot.Checked = bUseBuffBot;
                 chkLogOff.Checked = bLogOff;
-                chkUseCharge.Checked = bUseCharge;
-                chkEquip.Checked = bEquip;
-                chkUseWeb.Checked = bUseWeb;
+                //chkUseCharge.Checked = bUseCharge;
+                //chkEquip.Checked = bEquip;
+                //chkUseWeb.Checked = bUseWeb;
                 chkRareAllegChan.Checked = bRareAllegChan;
                 chkRareTradeChan.Checked = bRareTradeChan;
                 chkEnableMail.Checked = bEnableMail;

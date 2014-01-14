@@ -78,6 +78,7 @@ namespace Handyman
                      {
                          try
                          {
+                             bSpellsinUse = true;
                              checkBuffs();
                              if (!bSpellsinUse)
                              {
@@ -109,7 +110,7 @@ namespace Handyman
                     try
                     {
                         if (spellsList != null)
-                        { numBuffs = spellsList.Count; SubscribeBuffingEvents(); Util.WriteToChat("Number of spells in spells List " + numBuffs);}
+                        { numBuffs = spellsList.Count-1; SubscribeBuffingEvents(); Util.WriteToChat("Number of spells in spells List " + numBuffs);}
                         else { Util.WriteToChat("You must first create a spells list."); }
                         
                   
@@ -124,23 +125,18 @@ namespace Handyman
                         BuffingTimer.Tick += BuffingTimer_Tick;
                         BuffingTimer.Interval = 1000;
                         BuffingTimer.Start();
-
                     }
                     catch (Exception ex) { Util.LogError(ex); }
-
                 }
 
                 private void BuffingTimer_Tick(object sender, EventArgs BuffingTimer_Tick)
                 {
                     try
                     {
-
                         nSpellID = spellsList[nbuffsCast];
                         Core.Actions.SetCombatMode(CombatState.Magic);
                         Core.Actions.CastSpell(nSpellID, Core.CharacterFilter.Id);
                         waitForCast();
-
-
                     }
 
                     catch (Exception ex) { Util.LogError(ex); }
@@ -166,6 +162,7 @@ namespace Handyman
                 {
                     if (bDrankBeer) { return; }
                     if (bTinkSucceeded) { return; }
+                  //  if (bContinue) { return; }
                     if(msubRoutine.Contains("buffing") || msecondarysubRoutine.Contains("buffing"))
                     {
                     if (buffPending && nbuffsCast < numBuffs ) { Util.WriteToChat("I just cast " + nSpellID + ", " + "nbuffscast = " + nbuffsCast);  }
@@ -193,6 +190,7 @@ namespace Handyman
                         Util.WriteToChat("Number of active enchantments: " + spellCount.ToString());
                         for (int i = 0; i < spellCount; i++)
                         {
+                            if (!bSpellsinUse) { return; }
                             int spellid = Core.CharacterFilter.Enchantments[i].SpellId;
                             int timeleft = Core.CharacterFilter.Enchantments[i].TimeRemaining;
                             bSpellsinUse = true;
@@ -202,6 +200,7 @@ namespace Handyman
                                 case 4530:
                                     bCreatureBuffed = true;
                                     if (timeleft < 300) { bCreatureBuffed = false; bSpellsinUse = false; }
+                                    Util.WriteToChat("timeleft: " + timeleft + ", bcreaturebuffed = " + bCreatureBuffed.ToString());
                                     break;
                                 case 4305:
                                     bFocusBuffed = true;
@@ -248,6 +247,10 @@ namespace Handyman
                                     if (timeleft < 300) { bMagicTinkBuffed = false; bSpellsinUse = false; }
                                     break;
                                 case 4566:
+                                    bItemTinkBuffed = true;
+                                    if (timeleft < 300) { bItemTinkBuffed = false; bSpellsinUse = false; }
+                                    break;
+                                case 5068:
                                     bItemTinkBuffed = true;
                                     if (timeleft < 300) { bItemTinkBuffed = false; bSpellsinUse = false; }
                                     break;

@@ -92,13 +92,13 @@ namespace Handyman
             chkWeaponTink.Change -= new EventHandler<MyClasses.MetaViewWrappers.MVCheckBoxChangeEventArgs>(chkWeaponTink_Change);
             chkMagicItemTink.Change -= new EventHandler<MyClasses.MetaViewWrappers.MVCheckBoxChangeEventArgs>(chkMagicItemTink_Change);
             chkSalvaging.Change -= new EventHandler<MyClasses.MetaViewWrappers.MVCheckBoxChangeEventArgs>(chkSalvaging_Change);
-            chkSetUst.Change -= new EventHandler<MyClasses.MetaViewWrappers.MVCheckBoxChangeEventArgs>(chkSetUst_Change);
-            chkSetFocusingStone.Change -= new EventHandler<MyClasses.MetaViewWrappers.MVCheckBoxChangeEventArgs>(chkSetFocusingStone_Change);
+            //chkSetUst.Change -= new EventHandler<MyClasses.MetaViewWrappers.MVCheckBoxChangeEventArgs>(chkSetUst_Change);
+            //chkSetFocusingStone.Change -= new EventHandler<MyClasses.MetaViewWrappers.MVCheckBoxChangeEventArgs>(chkSetFocusingStone_Change);
             chkAlchemy.Change -= new EventHandler<MyClasses.MetaViewWrappers.MVCheckBoxChangeEventArgs>(chkAlchemy_Change);
             chkCooking.Change -= new EventHandler<MyClasses.MetaViewWrappers.MVCheckBoxChangeEventArgs>(chkCooking_Change);
             chkFletching.Change -= new EventHandler<MyClasses.MetaViewWrappers.MVCheckBoxChangeEventArgs>(chkFletching_Change);
             chkLockpick.Change -= new EventHandler<MyClasses.MetaViewWrappers.MVCheckBoxChangeEventArgs>(chkLockpick_Change);
-            chkTier4Rares.Change -= new EventHandler<MyClasses.MetaViewWrappers.MVCheckBoxChangeEventArgs>(chkTier4Rares_Change);
+          //  chkTier4Rares.Change -= new EventHandler<MyClasses.MetaViewWrappers.MVCheckBoxChangeEventArgs>(chkTier4Rares_Change);
 
             chkBuffsEnabled.Change -= new EventHandler<MyClasses.MetaViewWrappers.MVCheckBoxChangeEventArgs>(chkBuffsEnabled_Change);
             chkBuffOnStart.Change -= new EventHandler<MyClasses.MetaViewWrappers.MVCheckBoxChangeEventArgs>(chkBuffOnStart_Change);
@@ -107,19 +107,19 @@ namespace Handyman
             chkUseBuffBot.Change -= new EventHandler<MyClasses.MetaViewWrappers.MVCheckBoxChangeEventArgs>(chkUseBuffBot_Change);
 
             chkLogOff.Change -= new EventHandler<MyClasses.MetaViewWrappers.MVCheckBoxChangeEventArgs>(chkLogOff_Change);
-            chkUseCharge.Change -= new EventHandler<MyClasses.MetaViewWrappers.MVCheckBoxChangeEventArgs>(chkUseCharge_Change);
-            chkEquip.Change -= new EventHandler<MyClasses.MetaViewWrappers.MVCheckBoxChangeEventArgs>(chkEquip_Change);
-            chkUseWeb.Change -= new EventHandler<MyClasses.MetaViewWrappers.MVCheckBoxChangeEventArgs>(chkUseWeb_Change);
+            //chkUseCharge.Change -= new EventHandler<MyClasses.MetaViewWrappers.MVCheckBoxChangeEventArgs>(chkUseCharge_Change);
+            //chkEquip.Change -= new EventHandler<MyClasses.MetaViewWrappers.MVCheckBoxChangeEventArgs>(chkEquip_Change);
+            //chkUseWeb.Change -= new EventHandler<MyClasses.MetaViewWrappers.MVCheckBoxChangeEventArgs>(chkUseWeb_Change);
             chkRareAllegChan.Change -= new EventHandler<MyClasses.MetaViewWrappers.MVCheckBoxChangeEventArgs>(chkRareAllegChan_Change);
             chkRareTradeChan.Change -= new EventHandler<MyClasses.MetaViewWrappers.MVCheckBoxChangeEventArgs>(chkRareTradeChan_Change);
             chkEnableMail.Change -= new EventHandler<MyClasses.MetaViewWrappers.MVCheckBoxChangeEventArgs>(chkEnableMail_Change);
             chkEnterSpamMail.Change -= new EventHandler<MyClasses.MetaViewWrappers.MVCheckBoxChangeEventArgs>(chkEnterSpamMail_Change);
             chkEnterSpamRare.Change -= new EventHandler<MyClasses.MetaViewWrappers.MVCheckBoxChangeEventArgs>(chkEnterSpamRare_Change);
 
-            chkCalcMajors.Change -= new EventHandler<MyClasses.MetaViewWrappers.MVCheckBoxChangeEventArgs>(chkCalcMajors_Change);
-            chkJourneymanPet.Change -= new EventHandler<MyClasses.MetaViewWrappers.MVCheckBoxChangeEventArgs>(chkJourneymanPet_Change);
-            chkArtisanPet.Change -= new EventHandler<MyClasses.MetaViewWrappers.MVCheckBoxChangeEventArgs>(chkArtisanPet_Change);
-            chkMasterPet.Change -= new EventHandler<MyClasses.MetaViewWrappers.MVCheckBoxChangeEventArgs>(chkMasterPet_Change);
+            //chkCalcMajors.Change -= new EventHandler<MyClasses.MetaViewWrappers.MVCheckBoxChangeEventArgs>(chkCalcMajors_Change);
+            //chkJourneymanPet.Change -= new EventHandler<MyClasses.MetaViewWrappers.MVCheckBoxChangeEventArgs>(chkJourneymanPet_Change);
+            //chkArtisanPet.Change -= new EventHandler<MyClasses.MetaViewWrappers.MVCheckBoxChangeEventArgs>(chkArtisanPet_Change);
+            //chkMasterPet.Change -= new EventHandler<MyClasses.MetaViewWrappers.MVCheckBoxChangeEventArgs>(chkMasterPet_Change);
             chkSetBuffingWand.Change -= new EventHandler<MyClasses.MetaViewWrappers.MVCheckBoxChangeEventArgs>(chkBuffingWand_Change);
 
             Decal.Adapter.CoreManager.Current.ItemSelected -= new EventHandler<ItemSelectedEventArgs>(Current_ItemSelected);
@@ -167,14 +167,19 @@ namespace Handyman
                     try
                     {
                         setupTime = DateTime.Now;
-                        Util.WriteToChat("I am ready to go to setup lists.");
+                      //  Util.WriteToChat("I am ready to go to setup lists.");
                         Initializepaths();
 
                         fillSettingsVariables();
                         SetUpXdocs();
                         setUpLists();
-                        initStaticEquip();
-                        CoreManager.Current.RenderFrame += new EventHandler<EventArgs>(RenderFrame_DressBot);
+                        GetInventoryCraftbot();
+                    //    if ((DateTime.Now - setupTime).TotalSeconds > 1)
+                    //    {
+                         //   CoreManager.Current.RenderFrame -= new EventHandler<EventArgs>(RenderFrame_Inventory);
+                            initStaticEquip();
+                            CoreManager.Current.RenderFrame += new EventHandler<EventArgs>(RenderFrame_DressBot);
+                     //   }
 
                     }
                     catch (Exception ex) { Util.LogError(ex); }
@@ -189,7 +194,7 @@ namespace Handyman
                 {
                     CoreManager.Current.RenderFrame -= new EventHandler<EventArgs>(RenderFrame_DressBot);
                     msecondarysubRoutine = "PrepareforRest";
-                    Util.WriteToChat("I am in routine to set up bot outfit on startup.");
+                   // Util.WriteToChat("I am in routine to set up bot outfit on startup.");
                     chatCmd = "";
                     clearBotOutfit();
 
@@ -284,14 +289,19 @@ namespace Handyman
                         if (e.Text.Contains("You cast Incantation of Fletching")) { nbuffsCast++; }
                         if (e.Text.Contains("You cast Incantation of Arcanum Salvaging")) { nbuffsCast++; }
                         if (e.Text.Contains("You cast Incantation of Arcane Enlightenment")) { nbuffsCast++; }
+                        processChatBuffing();
+                    }
 
                         if (e.Text.Contains("You cast Ketnan's Eye")) { bDrankBeer = true; }
                         if (e.Text.Contains("You cast Brighteyes' Favor")) { bDrankBeer = true; }
                         if (e.Text.Contains("You cast Zongo's Fist")) { bDrankBeer = true; }
                         if (e.Text.Contains("You cast Hunter's Hardiness")) { bDrankBeer = true; }
-                        if (e.Text.Contains("successfully applies")) { bTinkSucceeded = true; }
-                         processChatBuffing();
-                    }
+                        if (e.Text.Contains(toonname + " successfully applies")) { bTinkSucceeded = true; }
+                        if ((e.Text.Contains("tells you")) && ((e.Text.Contains("Continue")) || (e.Text.Contains("continue")))) { bContinue = true; }
+                        if (e.Text.Contains("You give")){bReturnItemCompleted = true;}
+ 
+                        
+
                     if (chatCmd == null || chatCmd == "")
                     {
                         if ((e.Text.Contains("tells you")) && ((e.Text.Contains("Salvage")) || (e.Text.Contains("salvage"))))
@@ -358,6 +368,7 @@ namespace Handyman
                             //Core.WorldFilter.EnterTrade += new EventHandler<Decal.Adapter.Wrappers.EnterTradeEventArgs>(WorldFilter_EnterTrade);
 
                         }
+                        
                     }
                   
                 }

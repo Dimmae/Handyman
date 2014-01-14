@@ -32,6 +32,8 @@ namespace Handyman
         string msecondarysubRoutine;
         string mroutine;
         string msub;
+        string msubinven;
+        int inventoryCount;
 
         // private System.Windows.Forms.WindowsTimer MasterWindowsTimer = new System.Windows.Forms.WindowsTimer();
         public static string Log;
@@ -60,7 +62,10 @@ namespace Handyman
        List<string> botCmds = null;
        List<WorldObject> objTrade = new List<WorldObject>();
        List<int> objTradeID = null;
+       List<int> salvages = null;
         //Settings variables
+       bool bdrinkbeeranyway;
+        bool bContinue;
         bool bEnabled;
         bool bArmorTink;
         bool bWeaponTink;
@@ -91,6 +96,7 @@ namespace Handyman
         bool bArtisanPet;
         bool bMasterPet;
         bool bTinkSucceeded;
+        bool bReturnItemCompleted;
  
         int buffWand = 0;
         int objSelectedID = 0;

@@ -56,7 +56,8 @@ namespace Handyman
                 
                   requestorID = e.TradeeId;
                   requestorName = Core.WorldFilter[e.TradeeId].Name;
-                //  Util.WriteToChat("Trader name: " + Core.WorldFilter[e.TradeeId].Name);
+                
+                  Util.WriteToChat("Trader name: " + Core.WorldFilter[e.TradeeId].Name);
                 //   if (((base.Core.WorldFilter[A_1.ItemId].ObjectClass.Equals((ObjectClass)2) || base.Core.WorldFilter[A_1.ItemId].ObjectClass.Equals((ObjectClass)3)) || (base.Core.WorldFilter[A_1.ItemId].ObjectClass.Equals((ObjectClass)4) || base.Core.WorldFilter[A_1.ItemId].ObjectClass.Equals((ObjectClass)1))) || (base.Core.WorldFilter[A_1.ItemId].ObjectClass.Equals((ObjectClass)9) || base.Core.WorldFilter[A_1.ItemId].ObjectClass.Equals((ObjectClass)0x1f)))
                 // from Magnus code
                 // Thx Magnus for your code which really helped
@@ -70,6 +71,8 @@ namespace Handyman
                 //     traderId = e.TraderId;
                 //else if (e.TraderId == botGuid)
                 //    traderId = e.TradeeId;
+                 botInventory = new List<WorldObject>();
+                 msubRoutine = "GetInventory";
 
                 GetInventoryCraftbot();
                 if (requestorID == botGuid) { Util.WriteToChat("Traderid = Krafie"); }
@@ -79,11 +82,12 @@ namespace Handyman
                  if ((chatCmd == null) || (chatCmd == ""))
                 {
                     WriteToTrader("You must give me a command such as salvage, weapon, armor, before I can continue.");
-                    Util.WriteToChat("I should have just given a tell to tradee");
-                    chatCmd = "";
+                    return;
+                     
                 }
                 else
                 {
+                    Util.WriteToChat("I am in the else of chatcmd == null");
                     if (mroutine.Contains("readyfortrade"))
                     {
                         Core.WorldFilter.AcceptTrade += new EventHandler<AcceptTradeEventArgs>(WorldFilter_AcceptTrade);
@@ -99,15 +103,38 @@ namespace Handyman
         {
             try
             {
+               // inventoryCount = Core.WorldFilter.GetInventory(
+              //  Util.WriteToChat("I am in GetInventory");
+                doTheInventory();
+            }
+           catch (Exception ex) { Util.LogError(ex); }
+        }
+
+        private void doTheInventory()
+        {
+          //  Util.WriteToChat("I am in dotheinventory");
+            getInventory();
+        //    
+         //   CoreManager.Current.RenderFrame += new EventHandler<EventArgs>(RenderFrame_Inventory);
+         }
+
+ //         private void RenderFrame_Inventory(object sender, EventArgs e)
+         private void getInventory()
+          {
+              try{
+                  botInventory = new List<WorldObject>();
+               // CoreManager.Current.RenderFrame -= new EventHandler<EventArgs>(RenderFrame_Inventory);
+
                 //loop for checking each obj in the current inventory
-                msubRoutine = "GetInventory";
                 //Need to find the current inventory objects and create a list of their ids mCurrID
-                botInventory = new List<WorldObject>();
+                //  Util.WriteToChat("I am in renderinventoryframe");
                 foreach (Decal.Adapter.Wrappers.WorldObject obj in Core.WorldFilter.GetInventory())
                 {
-                    try
+                   try
                     {
                         objID = obj.Id;
+                        //Util.WriteToChat(obj.Name);
+ 
                         //     string sobjID = objID.ToString();
                         //   mBotInventoryID.Add(objID);
                         botInventory.Add(obj);
@@ -117,8 +144,11 @@ namespace Handyman
 
 
                 } // endof foreach world object
+                inventoryCount = botInventory.Count;
                 msubRoutine = "";
-                Util.WriteToChat("Number of items in inventory: " + botInventory.Count);
+               // Util.WriteToChat("Number of items in inventory: " + botInventory.Count);
+                // CoreManager.Current.RenderFrame -= new EventHandler<EventArgs>(RenderFrame_Inventory);
+
             }
             catch (Exception ex) { Util.LogError(ex); }
         }
@@ -192,7 +222,11 @@ namespace Handyman
                     ////Need to find the current inventory objects and create a list of their ids mCurrID
                     if (!botInventory.Contains(obj))
                     {
+                       Globals.Host.Actions.RequestId(obj.Id);
+ 
+
                         TrdObjects.Add(obj);
+                    
                         if(obj.Name.Contains("Salvage")){Salvages.Add(obj);}
                         else{TinkObject = obj;}
 

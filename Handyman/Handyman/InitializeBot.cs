@@ -61,7 +61,9 @@ namespace Handyman
   
             if (!File.Exists(equipmentFilename))
             {
-              //  saveEquipToXML();
+                     XDocument tempEquipDoc = new XDocument(new XElement("Equip"));
+                    tempEquipDoc.Save(equipmentFilename);
+                    tempEquipDoc = null;
 
             }
  
@@ -70,9 +72,15 @@ namespace Handyman
                 saveSpellsToXML();
 
             }
-            //else
-            //{ xdocSpells = XDocument.Load(spellsFilename); }
+            if (!File.Exists(settingsFilename))
+            {
+                XDocument tempsettingsDoc = new XDocument(new XElement("Settings"));
+                tempsettingsDoc.Save(settingsFilename);
+                tempsettingsDoc = null;
 
+            }
+              
+ 
             }
            catch (Exception ex) { Util.LogError(ex); }
 
@@ -81,11 +89,11 @@ namespace Handyman
         private void setUpLists()
         {
             try{
-                Util.WriteToChat("I am in setuplists function");
+              //  Util.WriteToChat("I am in setuplists function");
             xdocSpells = new XDocument();
             xdocSpells = XDocument.Load(spellsFilename);
             IEnumerable<XElement> elements = xdocSpells.Element("Spells").Descendants("Spell8");
-                spellsList = new List<int>();
+            spellsList = new List<int>();
                 foreach (XElement el in elements)
                 {
                     nSpellID = Convert.ToInt32(el.Value);
@@ -139,6 +147,7 @@ namespace Handyman
             xdocSpells.Root.Add(new XElement("Spell8", 4640));
             xdocSpells.Root.Add(new XElement("Spell8", 4592));
             xdocSpells.Root.Add(new XElement("Spell8", 5068));
+            xdocSpells.Root.Add(new XElement("Spell8", 4566));
             xdocSpells.Root.Add(new XElement("Spell8", 4506));
             xdocSpells.Root.Add(new XElement("Spell8", 4526));
             xdocSpells.Root.Add(new XElement("Spell8", 4586));
@@ -154,25 +163,32 @@ namespace Handyman
             {
                 try{
                     List<WorldObject> temp = new List<WorldObject>();
-               xdocEquipment = new XDocument();
-               xdocEquipment = XDocument.Load(equipmentFilename);
-               myUst = Convert.ToInt32(xdocEquipment.Root.Element("Salvaging_Ust").Element("MyUst").Value);
-               myFocusingStone = Convert.ToInt32(xdocEquipment.Root.Element("Tinking_Crafting").Element("MyFocusingStone").Value);
-               buffWand = Convert.ToInt32(xdocEquipment.Root.Element("Buffing").Element("BuffWand").Value);
+                    if(File.Exists(equipmentFilename))
+                    {
+                        xdocEquipment = new XDocument();
+
+                        xdocEquipment = XDocument.Load(equipmentFilename);
+                        myUst = Convert.ToInt32(xdocEquipment.Root.Element("Salvaging_Ust").Element("MyUst").Value);
+                        myFocusingStone = Convert.ToInt32(xdocEquipment.Root.Element("Tinking_Crafting").Element("MyFocusingStone").Value);
+                        buffWand = Convert.ToInt32(xdocEquipment.Root.Element("Buffing").Element("BuffWand").Value);
                 
-              idleOutfit = Convert.ToInt32(xdocEquipment.Root.Element("IdleWield").Element("ItemID").Value);
-              GetInventoryCraftbot();
-              temp.AddRange(botInventory);
-              foreach (WorldObject obj in temp) 
-              { if (obj.Id == idleOutfit)
-                {
-                  oIdleOutfit = obj;
-                  temp.Clear();
-                  temp = null;
-                  break;
-                } 
-              }
-            }
+                        idleOutfit = Convert.ToInt32(xdocEquipment.Root.Element("IdleWield").Element("ItemID").Value);
+                        msubinven = "IdleClothes";
+                       //   GetInventoryCraftbot();
+                      temp.AddRange(botInventory);
+                       foreach (WorldObject obj in temp)
+                      {
+                         if (obj.Id == idleOutfit)
+                         {
+                            oIdleOutfit = obj;
+                            temp.Clear();
+                             temp = null;
+                          //   Util.WriteToChat("idleoutfit: " + idleOutfit.ToString());
+                             break;
+                         }
+                      }
+                    }
+                }
             catch (Exception ex) { Util.LogError(ex); }
 
            }
