@@ -129,6 +129,11 @@ namespace Handyman
             Core.WorldFilter.AddTradeItem -= new EventHandler<AddTradeItemEventArgs>(WorldFilter_AddTradeItem);
 
             CoreManager.Current.RenderFrame -= new EventHandler<EventArgs>(RenderFrame_Equip);
+            Core.EchoFilter.ServerDispatch -= HandymanServerDispatch;
+          //  WindowMessage += new EventHandler<WindowMessageEventArgs>(FilterCore_WindowMessage);
+
+
+
 
             if (BuffingTimer != null) { BuffingTimer.Stop(); BuffingTimer = null; buffPending = false; }
 
@@ -179,6 +184,8 @@ namespace Handyman
                          //   CoreManager.Current.RenderFrame -= new EventHandler<EventArgs>(RenderFrame_Inventory);
                             initStaticEquip();
                             CoreManager.Current.RenderFrame += new EventHandler<EventArgs>(RenderFrame_DressBot);
+                            Core.EchoFilter.ServerDispatch += HandymanServerDispatch;
+
                      //   }
 
                     }

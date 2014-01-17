@@ -167,11 +167,12 @@ namespace Handyman
                     {
                     if (buffPending && nbuffsCast < numBuffs ) { Util.WriteToChat("I just cast " + nSpellID + ", " + "nbuffscast = " + nbuffsCast);  }
                     else 
-                    { 
+                    {
+                        Core.Actions.SetCombatMode(CombatState.Peace);
+
                         BuffingTimer.Stop(); 
                         buffPending = false; 
                         Util.WriteToChat("I have turned off buffing timer. nbuffsCast = " + nbuffsCast);
-                        Core.Actions.SetCombatMode(CombatState.Peace);
                         msubRoutine = "";
                         msecondarysubRoutine = "";
                         mroutine = "";
@@ -187,105 +188,31 @@ namespace Handyman
                     try
                     {
                         int spellCount = Core.CharacterFilter.Enchantments.Count;
+                        int spellListCount = spellsList.Count;
+                        int timeleft;
                         Util.WriteToChat("Number of active enchantments: " + spellCount.ToString());
-                        for (int i = 0; i < spellCount; i++)
+                        Util.WriteToChat("Number of spells in spell list: " + spellListCount.ToString());
+                        for (int i = 0; i < spellListCount; i++)
                         {
+                            Util.WriteToChat("I am in check buffs and bspellsinuse: " + bSpellsinUse.ToString());
                             if (!bSpellsinUse) { return; }
-                            int spellid = Core.CharacterFilter.Enchantments[i].SpellId;
-                            int timeleft = Core.CharacterFilter.Enchantments[i].TimeRemaining;
-                            bSpellsinUse = true;
-                            //    Util.WriteToChat(timeleft.ToString());
-                            switch (spellid)
+                            int spellid = spellsList[i];
+                            for (int k = 0; k < spellCount; k++)
                             {
-                                case 4530:
-                                    bCreatureBuffed = true;
-                                    if (timeleft < 300) { bCreatureBuffed = false; bSpellsinUse = false; }
-                                    Util.WriteToChat("timeleft: " + timeleft + ", bcreaturebuffed = " + bCreatureBuffed.ToString());
-                                    break;
-                                case 4305:
-                                    bFocusBuffed = true;
-                                    if (timeleft < 300) { bFocusBuffed = false; bSpellsinUse = false; }
-                                    break;
-                                case 4329:
-                                    bWillBuffed = true;
-                                    if (timeleft < 300) { bWillBuffed = false; bSpellsinUse = false; }
-                                    break;
-                                case 4582:
-                                    bLifeBuffed = true;
-                                    if (timeleft < 300) { bLifeBuffed = false; bSpellsinUse = false; }
-                                    break;
-                                case 4602:
-                                    bManaCBuffed = true;
-                                    if (timeleft < 300) { bManaCBuffed = false; bSpellsinUse = false; }
-                                    break;
-                                case 4564:
-                                    bItemBuffed = true;
-                                    if (timeleft < 300) { bItemBuffed = false; bSpellsinUse = false; }
-                                    break;
-                                case 4297:
-                                    bCoordBuffed = true;
-                                    if (timeleft < 300) { bCoordBuffed = false; bSpellsinUse = false; }
-                                    break;
-                                case 4299:
-                                    bEndurBuffed = true;
-                                    if (timeleft < 300) { bEndurBuffed = false; bSpellsinUse = false; }
-                                    break;
-                                case 4325:
-                                    bStrengthBuffed = true;
-                                    if (timeleft < 300) { bStrengthBuffed = false; bSpellsinUse = false; }
-                                    break;
-                                case 4512:
-                                    bArmorTinkBuffed = true;
-                                    if (timeleft < 300) { bArmorTinkBuffed = false; bSpellsinUse = false; }
-                                    break;
-                                case 4640:
-                                    bWeapTinkBuffed = true;
-                                    if (timeleft < 300) { bWeapTinkBuffed = false; bSpellsinUse = false; }
-                                    break;
-                                case 4592:
-                                    bMagicTinkBuffed = true;
-                                    if (timeleft < 300) { bMagicTinkBuffed = false; bSpellsinUse = false; }
-                                    break;
-                                case 4566:
-                                    bItemTinkBuffed = true;
-                                    if (timeleft < 300) { bItemTinkBuffed = false; bSpellsinUse = false; }
-                                    break;
-                                case 5068:
-                                    bItemTinkBuffed = true;
-                                    if (timeleft < 300) { bItemTinkBuffed = false; bSpellsinUse = false; }
-                                    break;
-                                case 4506:
-                                    bAlchemyBuffed = true;
-                                    if (timeleft < 300) { bAlchemyBuffed = false; bSpellsinUse = false; }
-                                    break;
-                                case 4526:
-                                    bCookingBuffed = true;
-                                    if (timeleft < 300) { bCookingBuffed = false; bSpellsinUse = false; }
-                                    break;
-                                case 4586:
-                                    bLockpickBuffed = true;
-                                    if (timeleft < 300) { bLockpickBuffed = false; bSpellsinUse = false; }
-                                    break;
-                                case 4552:
-                                    bFletchingBuffed = true;
-                                    if (timeleft < 300) { bFletchingBuffed = false; bSpellsinUse = false; }
-                                    break;
-                                case 4510:
-                                    bArcaneBuffed = true;
-                                    if (timeleft < 300) { bArcaneBuffed = false; bSpellsinUse = false; }
-                                    break;
-                                default:
-                                    break;
+                                if (Core.CharacterFilter.Enchantments[i].SpellId == spellid)
+                                {
+                                    timeleft = Core.CharacterFilter.Enchantments[spellid].TimeRemaining;
+                                    if (timeleft < 300) { bSpellsinUse = false; }
+                                    else { bSpellsinUse = true; }
+                                }
+                                else { bSpellsinUse = false; }
                             }
                         }
                     }
+                                          
                     catch (Exception ex) { Util.LogError(ex); }
-
-               }
-
+ 
                 }
-           
     }
-
-
+}
 

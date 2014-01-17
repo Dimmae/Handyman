@@ -200,10 +200,10 @@ namespace Handyman
                     Salvage();
                     break;
                 case "Weapon":
-                    TinkWeapon();
+                    Tink();
                     break;
                 case "Armor":
-                    TinkArmor();
+                    Tink();
                     break;
 
             }

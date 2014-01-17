@@ -74,6 +74,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="ReadyBot.cs" />
+    <Compile Include="ServerPackets.cs" />
     <Compile Include="TradeEvents.cs" />
     <Compile Include="Util.cs" />
     <Compile Include="Views\MainView.cs" />

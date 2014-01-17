@@ -103,12 +103,11 @@ namespace Handyman
 
         }
 
-
-        private void TinkWeapon()
+        private void Tink()
         {
             //  Util.WriteToChat("I am in TinkWeapon");
-            if (chatCmd == "Weapon")
-            {
+            //if (chatCmd == "Weapon")
+            //{
                 try
                 {
                     if (TrdObjects.Count > 1)
@@ -122,7 +121,7 @@ namespace Handyman
                         for (int n = 0; n < nobj; n++)
                         {
                             obj = TrdObjects[n];
-                       //     Util.WriteToChat("n = " + n + ", " + obj.Name);
+                            //     Util.WriteToChat("n = " + n + ", " + obj.Name);
                             nobjID = obj.Id;
                             objClass = obj.ObjectClass.ToString();
                             //       if (TrdObjects[n].Name.Contains("Salvaged"))
@@ -131,83 +130,125 @@ namespace Handyman
                                 nsalvageid = nobjID;
                                 salvages.Add(nobjID);
                                 osalvageobj = obj;
-                            //    Util.WriteToChat("Added " + obj.Name + " to salvages");
+                                //    Util.WriteToChat("Added " + obj.Name + " to salvages");
                             }
-                            else if (objClass.Contains("Melee") || objClass.Contains("Missile"))
+                            else 
                             {
-
+                               ntinkobjid = nobjID;
+                               otinkobj = obj;
+ 
                             }
                         } // end of for int n
 
-                     //   Util.WriteToChat("Objtotink " + otinkobj.ToString() + ", salvage " + salvages[0].ToString());
+                        //   Util.WriteToChat("Objtotink " + otinkobj.ToString() + ", salvage " + salvages[0].ToString());
                         DotheTink();
                     } // end of trdobjects.count
                 }
                 catch (Exception ex) { Util.LogError(ex); }
-            }
+            
         }
 
-        private void TinkArmor()
-        {
-            //  Util.WriteToChat("I am in TinkArmor");
-            if (chatCmd == "Armor")
-            {
-                try
-                {
-                    if (TrdObjects.Count > 1)
-                    {
 
-                        int nobj = TrdObjects.Count;
-                        WorldObject obj;
-                        string objClass;
-                        int nobjID;
-                      //  Util.WriteToChat("nobj " + nobj);
-                        List<int> salvages = new List<int>();
-                        for (int n = 0; n < nobj; n++)
-                        {
-                            obj = TrdObjects[n];
-                          //  Util.WriteToChat("n = " + n + ", " + obj.Name);
-                            nobjID = obj.Id;
-                            objClass = obj.ObjectClass.ToString();
-                            //       if (TrdObjects[n].Name.Contains("Salvaged"))
-                            if (obj.Name.Contains("Salvage"))
-                            {
-                                nsalvageid = nobjID;
-                                salvages.Add(nobjID);
-                                osalvageobj = obj;
-                              //  Util.WriteToChat("Added " + obj.Name + " to salvages");
-                            }
-                            else if (objClass.Contains("Armor") || objClass.Contains("Clothing"))
-                            {
-                                ntinkobjid = nobjID;
-                                otinkobj = obj;
-                             //   Util.WriteToChat("otinkobj " + otinkobj.ToString());
 
-                            }
-                        } // end of for int n
 
-                     //   Util.WriteToChat("Objtotink " + otinkobj.ToString() + ", salvage " + salvages[0].ToString());
-                        tinkTime = DateTime.Now;
-                        DotheTink();
-                    } // end of trdobjects.count
-                }
-                catch (Exception ex) { Util.LogError(ex); }
-            }
-        }
+        //private void TinkWeapon()
+        //{
+        //    //  Util.WriteToChat("I am in TinkWeapon");
+        //    if (chatCmd == "Weapon")
+        //    {
+        //        try
+        //        {
+        //            if (TrdObjects.Count > 1)
+        //            {
+
+        //                int nobj = TrdObjects.Count;
+        //                WorldObject obj;
+        //                string objClass;
+        //                int nobjID;
+        //                salvages = new List<int>();
+        //                for (int n = 0; n < nobj; n++)
+        //                {
+        //                    obj = TrdObjects[n];
+        //               //     Util.WriteToChat("n = " + n + ", " + obj.Name);
+        //                    nobjID = obj.Id;
+        //                    objClass = obj.ObjectClass.ToString();
+        //                    //       if (TrdObjects[n].Name.Contains("Salvaged"))
+        //                    if (obj.Name.Contains("Salvage"))
+        //                    {
+        //                        nsalvageid = nobjID;
+        //                        salvages.Add(nobjID);
+        //                        osalvageobj = obj;
+        //                    //    Util.WriteToChat("Added " + obj.Name + " to salvages");
+        //                    }
+        //                    else if (objClass.Contains("Melee") || objClass.Contains("Missile"))
+        //                    {
+
+        //                    }
+        //                } // end of for int n
+
+        //             //   Util.WriteToChat("Objtotink " + otinkobj.ToString() + ", salvage " + salvages[0].ToString());
+        //                DotheTink();
+        //            } // end of trdobjects.count
+        //        }
+        //        catch (Exception ex) { Util.LogError(ex); }
+        //    }
+        //}
+
+        //private void TinkArmor()
+        //{
+        //    //  Util.WriteToChat("I am in TinkArmor");
+        //    if (chatCmd == "Armor")
+        //    {
+        //        try
+        //        {
+        //            if (TrdObjects.Count > 1)
+        //            {
+
+        //                int nobj = TrdObjects.Count;
+        //                WorldObject obj;
+        //                string objClass;
+        //                int nobjID;
+        //              //  Util.WriteToChat("nobj " + nobj);
+        //                List<int> salvages = new List<int>();
+        //                for (int n = 0; n < nobj; n++)
+        //                {
+        //                    obj = TrdObjects[n];
+        //                  //  Util.WriteToChat("n = " + n + ", " + obj.Name);
+        //                    nobjID = obj.Id;
+        //                    objClass = obj.ObjectClass.ToString();
+        //                    //       if (TrdObjects[n].Name.Contains("Salvaged"))
+        //                    if (obj.Name.Contains("Salvage"))
+        //                    {
+        //                        nsalvageid = nobjID;
+        //                        salvages.Add(nobjID);
+        //                        osalvageobj = obj;
+        //                      //  Util.WriteToChat("Added " + obj.Name + " to salvages");
+        //                    }
+        //                    else if (objClass.Contains("Armor") || objClass.Contains("Clothing"))
+        //                    {
+        //                        ntinkobjid = nobjID;
+        //                        otinkobj = obj;
+        //                     //   Util.WriteToChat("otinkobj " + otinkobj.ToString());
+
+        //                    }
+        //                } // end of for int n
+
+        //             //   Util.WriteToChat("Objtotink " + otinkobj.ToString() + ", salvage " + salvages[0].ToString());
+        //                tinkTime = DateTime.Now;
+        //                DotheTink();
+        //            } // end of trdobjects.count
+        //        }
+        //        catch (Exception ex) { Util.LogError(ex); }
+        //    }
+        //}
 
         private void DotheTink()
         {
             try
             {
-                getChanceofSuccess();
-                Util.WriteToChat("ChanceofSuccess: " + ChanceofSuccess.ToString());
-
-                //!!!NOTE WELL This only added to facilitate testing chance of success; must be removed!!!
-                returnItem();
  
-
-                //   Util.WriteToChat("I am in DotheTink");
-                // CoreManager.Current.RenderFrame += new EventHandler<EventArgs>(RenderFrame_Tink);
+                  Util.WriteToChat("I am in DotheTink");
+                   CoreManager.Current.RenderFrame += new EventHandler<EventArgs>(RenderFrame_Tink);
 
 
             }
