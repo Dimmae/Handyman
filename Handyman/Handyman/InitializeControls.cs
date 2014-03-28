@@ -530,68 +530,71 @@ namespace Handyman
             {
                 XDocument xdocSettings = new XDocument();
                  xdocSettings = XDocument.Load(settingsFilename);
+                 if (xdocSettings.Descendants().Count() < 10) { return; }
+                 else
+                 {
 
-                XElement el = xdocSettings.Root.Element("Setting");
+                     XElement el = xdocSettings.Root.Element("Setting");
 
-                bEnabled = Convert.ToBoolean(el.Element("Enabled").Value);
-                bArmorTink = Convert.ToBoolean(el.Element("ArmorTink").Value);
-                bItemTink = Convert.ToBoolean(el.Element("ItemTink").Value);
-                bWeaponTink = Convert.ToBoolean(el.Element("WeaponTink").Value);
-                bMagicItemTink = Convert.ToBoolean(el.Element("MagicItemTink").Value);
-                bSalvaging = Convert.ToBoolean(el.Element("Salvaging").Value);
-                bAlchemy = Convert.ToBoolean(el.Element("Alchemy").Value);
-                bCooking = Convert.ToBoolean(el.Element("Cooking").Value);
-                bLockpick = Convert.ToBoolean(el.Element("Lockpick").Value);
-                bFletching = Convert.ToBoolean(el.Element("Fletching").Value);
-                bTier4Rares = Convert.ToBoolean(el.Element("Tier4Rares").Value);
-                bBuffsEnabled = Convert.ToBoolean(el.Element("BuffsEnabled").Value);
-                bBuffOnStart = Convert.ToBoolean(el.Element("BuffOnStart").Value);
-                bUseRares = Convert.ToBoolean(el.Element("UseRares").Value);
-                bUseBeers = Convert.ToBoolean(el.Element("UseBeers").Value);
-                bUseBuffBot = Convert.ToBoolean(el.Element("UseBuffBot").Value);
-                bLogOff = Convert.ToBoolean(el.Element("LogOff").Value);
-                bUseCharge = Convert.ToBoolean(el.Element("UseCharge").Value);
-                bEquip = Convert.ToBoolean(el.Element("Equip").Value);
-                bUseWeb = Convert.ToBoolean(el.Element("UseWeb").Value);
-                bRareAllegChan = Convert.ToBoolean(el.Element("RareAllegChan").Value);
-                bRareTradeChan = Convert.ToBoolean(el.Element("RareTradeChan").Value);
-                bEnableMail = Convert.ToBoolean(el.Element("EnableMail").Value);
-                bEnterSpamMail = Convert.ToBoolean(el.Element("EnterSpamMail").Value);
-                bEnterSpamRare = Convert.ToBoolean(el.Element("EnterSpamRare").Value);
-                bCalcMajors = Convert.ToBoolean(el.Element("CalcMajors").Value);
-                bJourneymanPet = Convert.ToBoolean(el.Element("JourneymanPet").Value);
-                bArtisanPet = Convert.ToBoolean(el.Element("ArtisanPet").Value);
-                bMasterPet = Convert.ToBoolean(el.Element("MasterPet").Value);
-             
+                     bEnabled = Convert.ToBoolean(el.Element("Enabled").Value);
+                     bArmorTink = Convert.ToBoolean(el.Element("ArmorTink").Value);
+                     bItemTink = Convert.ToBoolean(el.Element("ItemTink").Value);
+                     bWeaponTink = Convert.ToBoolean(el.Element("WeaponTink").Value);
+                     bMagicItemTink = Convert.ToBoolean(el.Element("MagicItemTink").Value);
+                     bSalvaging = Convert.ToBoolean(el.Element("Salvaging").Value);
+                     bAlchemy = Convert.ToBoolean(el.Element("Alchemy").Value);
+                     bCooking = Convert.ToBoolean(el.Element("Cooking").Value);
+                     bLockpick = Convert.ToBoolean(el.Element("Lockpick").Value);
+                     bFletching = Convert.ToBoolean(el.Element("Fletching").Value);
+                     bTier4Rares = Convert.ToBoolean(el.Element("Tier4Rares").Value);
+                     bBuffsEnabled = Convert.ToBoolean(el.Element("BuffsEnabled").Value);
+                     bBuffOnStart = Convert.ToBoolean(el.Element("BuffOnStart").Value);
+                     bUseRares = Convert.ToBoolean(el.Element("UseRares").Value);
+                     bUseBeers = Convert.ToBoolean(el.Element("UseBeers").Value);
+                     bUseBuffBot = Convert.ToBoolean(el.Element("UseBuffBot").Value);
+                     bLogOff = Convert.ToBoolean(el.Element("LogOff").Value);
+                     bUseCharge = Convert.ToBoolean(el.Element("UseCharge").Value);
+                     bEquip = Convert.ToBoolean(el.Element("Equip").Value);
+                     bUseWeb = Convert.ToBoolean(el.Element("UseWeb").Value);
+                     bRareAllegChan = Convert.ToBoolean(el.Element("RareAllegChan").Value);
+                     bRareTradeChan = Convert.ToBoolean(el.Element("RareTradeChan").Value);
+                     bEnableMail = Convert.ToBoolean(el.Element("EnableMail").Value);
+                     bEnterSpamMail = Convert.ToBoolean(el.Element("EnterSpamMail").Value);
+                     bEnterSpamRare = Convert.ToBoolean(el.Element("EnterSpamRare").Value);
+                     bCalcMajors = Convert.ToBoolean(el.Element("CalcMajors").Value);
+                     bJourneymanPet = Convert.ToBoolean(el.Element("JourneymanPet").Value);
+                     bArtisanPet = Convert.ToBoolean(el.Element("ArtisanPet").Value);
+                     bMasterPet = Convert.ToBoolean(el.Element("MasterPet").Value);
 
-                Util.WriteToChat("I will now fill the checkboxes.");
 
-                chkEnabled.Checked = bEnabled;
-                chkArmorTink.Checked = bArmorTink;
-                chkItemTink.Checked = bItemTink;
-                chkMagicItemTink.Checked = bMagicItemTink;
-                chkWeaponTink.Checked = bWeaponTink;
-                chkSalvaging.Checked = bSalvaging;
-                chkAlchemy.Checked = bAlchemy;
-                chkCooking.Checked = bCooking;
-                chkLockpick.Checked = bLockpick;
-                chkFletching.Checked = bFletching;
-              //  chkTier4Rares.Checked = bTier4Rares;
-                chkBuffsEnabled.Checked = bBuffsEnabled;
-                chkBuffOnStart.Checked = bBuffOnStart;
-                chkUseBeers.Checked = bUseBeers;
-                chkUseRares.Checked = bUseRares;
-                chkUseBuffBot.Checked = bUseBuffBot;
-                chkLogOff.Checked = bLogOff;
-                //chkUseCharge.Checked = bUseCharge;
-                //chkEquip.Checked = bEquip;
-                //chkUseWeb.Checked = bUseWeb;
-                chkRareAllegChan.Checked = bRareAllegChan;
-                chkRareTradeChan.Checked = bRareTradeChan;
-                chkEnableMail.Checked = bEnableMail;
-                chkEnterSpamMail.Checked = bEnterSpamMail;
-                chkEnterSpamRare.Checked = bEnterSpamRare;
+                     Util.WriteToChat("I will now fill the checkboxes.");
 
+                     chkEnabled.Checked = bEnabled;
+                     chkArmorTink.Checked = bArmorTink;
+                     chkItemTink.Checked = bItemTink;
+                     chkMagicItemTink.Checked = bMagicItemTink;
+                     chkWeaponTink.Checked = bWeaponTink;
+                     chkSalvaging.Checked = bSalvaging;
+                     chkAlchemy.Checked = bAlchemy;
+                     chkCooking.Checked = bCooking;
+                     chkLockpick.Checked = bLockpick;
+                     chkFletching.Checked = bFletching;
+                     //  chkTier4Rares.Checked = bTier4Rares;
+                     chkBuffsEnabled.Checked = bBuffsEnabled;
+                     chkBuffOnStart.Checked = bBuffOnStart;
+                     chkUseBeers.Checked = bUseBeers;
+                     chkUseRares.Checked = bUseRares;
+                     chkUseBuffBot.Checked = bUseBuffBot;
+                     chkLogOff.Checked = bLogOff;
+                     //chkUseCharge.Checked = bUseCharge;
+                     //chkEquip.Checked = bEquip;
+                     //chkUseWeb.Checked = bUseWeb;
+                     chkRareAllegChan.Checked = bRareAllegChan;
+                     chkRareTradeChan.Checked = bRareTradeChan;
+                     chkEnableMail.Checked = bEnableMail;
+                     chkEnterSpamMail.Checked = bEnterSpamMail;
+                     chkEnterSpamRare.Checked = bEnterSpamRare;
+                 }
                 
             }
             catch (Exception ex) { Util.LogError(ex); }

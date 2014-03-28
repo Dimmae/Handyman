@@ -28,16 +28,21 @@ namespace Handyman
 {
     public partial class PluginCore
     {
-        private int ntinkobjid = 0;
-        private int nsalvageid = 0;
-        private WorldObject osalvageobj;
-        private WorldObject otinkobj;
         private string mHoldingRoutine;
-        DateTime tinkTime;
-        DateTime tinkSucceed;
-        DateTime timeContinue;
-        DateTime returnTime;
+        private string sContinueMessage = null;
 
+        private WorldObject osalvage1;
+        private WorldObject osalvage2;
+        private WorldObject osalvage3;
+        private WorldObject osalvage4;
+        private WorldObject osalvage5;
+        private WorldObject osalvage6;
+        private WorldObject osalvage7;
+        private WorldObject osalvage8;
+        private WorldObject osalvage9;
+        private WorldObject osalvage10;
+
+        private WorldObject osalvage;
 
 
 
@@ -64,12 +69,12 @@ namespace Handyman
 
                     string Current;
                     int CurrentId;
-                    int n = TrdObjects.Count;
+                    int n = lstTrdObjects.Count;
 
                     for (int i = 0; i < n; i++)
                     {
-                        Current = TrdObjects[i].Name;
-                        CurrentId = TrdObjects[i].Id;
+                        Current = lstTrdObjects[i].Name;
+                        CurrentId = lstTrdObjects[i].Id;
                        // Util.WriteToChat("Item to be salvaged " + Current);
                         Core.Actions.UseItem(myUst, 0);
                         Core.Actions.SalvagePanelAdd(CurrentId);
@@ -87,17 +92,14 @@ namespace Handyman
 
         private void initiateCraftingTinkingSequence()
         {
-            // Util.WriteToChat("I am in function to initiate Crafting or Tinking");
+             Util.WriteToChat("I am in function to initiate Crafting or Tinking");
             try
             {
                 msecondarysubRoutine = "";
-                bSpellsinUse = true;
+                bSpellsinUse = false;
+                bEnhanced = false;
                 checkBuffs();
-             //   Util.WriteToChat("bspellsinuse: " + bSpellsinUse.ToString());
-                if (!bSpellsinUse) { msecondarysubRoutine = "buffing"; buff(); }
-                else { msecondarysubRoutine = ""; Util.WriteToChat("msecondarysubroutine: " + msecondarysubRoutine); checkFocus(); }
-
-            }
+           }
             catch (Exception ex) { Util.LogError(ex); }
 
 
@@ -105,44 +107,48 @@ namespace Handyman
 
         private void Tink()
         {
-            //  Util.WriteToChat("I am in TinkWeapon");
+            msecondarysubRoutine = "Tinking";
+             Util.WriteToChat("I am in Tink and there are " + lstTrdObjects.Count.ToString() + " items in the trading list.");
             //if (chatCmd == "Weapon")
             //{
                 try
                 {
-                    if (TrdObjects.Count > 1)
+                    if (lstTrdObjects.Count > 1)
                     {
 
-                        int nobj = TrdObjects.Count;
+                        int nobj = lstTrdObjects.Count;
                         WorldObject obj;
                         string objClass;
                         int nobjID;
-                        salvages = new List<int>();
+                        lstSalvages = new List<WorldObject>();
                         for (int n = 0; n < nobj; n++)
                         {
-                            obj = TrdObjects[n];
+                            obj = lstTrdObjects[n];
                             //     Util.WriteToChat("n = " + n + ", " + obj.Name);
                             nobjID = obj.Id;
                             objClass = obj.ObjectClass.ToString();
-                            //       if (TrdObjects[n].Name.Contains("Salvaged"))
+                            //       if (lstTrdObjects[n].Name.Contains("Salvaged"))
                             if (obj.Name.Contains("Salvage"))
                             {
-                                nsalvageid = nobjID;
-                                salvages.Add(nobjID);
-                                osalvageobj = obj;
-                                //    Util.WriteToChat("Added " + obj.Name + " to salvages");
-                            }
-                            else 
+                                lstSalvages.Add(obj);
+                           }
+                            else if (obj.ObjectClass.ToString().Contains("Gem")) { oGemObj = obj; }
+                            else
                             {
                                ntinkobjid = nobjID;
-                               otinkobj = obj;
+                               oTinkObj = obj;
  
                             }
                         } // end of for int n
+                         lstSortedSalvage = new List<WorldObject>();
+                        var sort = from WorldObject in lstSalvages
+                                   orderby WorldObject.Values(DoubleValueKey.SalvageWorkmanship) ascending
+                                   select WorldObject;
+                        lstSortedSalvage.AddRange(sort);
+                        nsalvageCount = lstSortedSalvage.Count;
 
-                        //   Util.WriteToChat("Objtotink " + otinkobj.ToString() + ", salvage " + salvages[0].ToString());
                         DotheTink();
-                    } // end of trdobjects.count
+                    } // end of lstTrdObjects.count
                 }
                 catch (Exception ex) { Util.LogError(ex); }
             
@@ -151,104 +157,32 @@ namespace Handyman
 
 
 
-        //private void TinkWeapon()
-        //{
-        //    //  Util.WriteToChat("I am in TinkWeapon");
-        //    if (chatCmd == "Weapon")
-        //    {
-        //        try
-        //        {
-        //            if (TrdObjects.Count > 1)
-        //            {
-
-        //                int nobj = TrdObjects.Count;
-        //                WorldObject obj;
-        //                string objClass;
-        //                int nobjID;
-        //                salvages = new List<int>();
-        //                for (int n = 0; n < nobj; n++)
-        //                {
-        //                    obj = TrdObjects[n];
-        //               //     Util.WriteToChat("n = " + n + ", " + obj.Name);
-        //                    nobjID = obj.Id;
-        //                    objClass = obj.ObjectClass.ToString();
-        //                    //       if (TrdObjects[n].Name.Contains("Salvaged"))
-        //                    if (obj.Name.Contains("Salvage"))
-        //                    {
-        //                        nsalvageid = nobjID;
-        //                        salvages.Add(nobjID);
-        //                        osalvageobj = obj;
-        //                    //    Util.WriteToChat("Added " + obj.Name + " to salvages");
-        //                    }
-        //                    else if (objClass.Contains("Melee") || objClass.Contains("Missile"))
-        //                    {
-
-        //                    }
-        //                } // end of for int n
-
-        //             //   Util.WriteToChat("Objtotink " + otinkobj.ToString() + ", salvage " + salvages[0].ToString());
-        //                DotheTink();
-        //            } // end of trdobjects.count
-        //        }
-        //        catch (Exception ex) { Util.LogError(ex); }
-        //    }
-        //}
-
-        //private void TinkArmor()
-        //{
-        //    //  Util.WriteToChat("I am in TinkArmor");
-        //    if (chatCmd == "Armor")
-        //    {
-        //        try
-        //        {
-        //            if (TrdObjects.Count > 1)
-        //            {
-
-        //                int nobj = TrdObjects.Count;
-        //                WorldObject obj;
-        //                string objClass;
-        //                int nobjID;
-        //              //  Util.WriteToChat("nobj " + nobj);
-        //                List<int> salvages = new List<int>();
-        //                for (int n = 0; n < nobj; n++)
-        //                {
-        //                    obj = TrdObjects[n];
-        //                  //  Util.WriteToChat("n = " + n + ", " + obj.Name);
-        //                    nobjID = obj.Id;
-        //                    objClass = obj.ObjectClass.ToString();
-        //                    //       if (TrdObjects[n].Name.Contains("Salvaged"))
-        //                    if (obj.Name.Contains("Salvage"))
-        //                    {
-        //                        nsalvageid = nobjID;
-        //                        salvages.Add(nobjID);
-        //                        osalvageobj = obj;
-        //                      //  Util.WriteToChat("Added " + obj.Name + " to salvages");
-        //                    }
-        //                    else if (objClass.Contains("Armor") || objClass.Contains("Clothing"))
-        //                    {
-        //                        ntinkobjid = nobjID;
-        //                        otinkobj = obj;
-        //                     //   Util.WriteToChat("otinkobj " + otinkobj.ToString());
-
-        //                    }
-        //                } // end of for int n
-
-        //             //   Util.WriteToChat("Objtotink " + otinkobj.ToString() + ", salvage " + salvages[0].ToString());
-        //                tinkTime = DateTime.Now;
-        //                DotheTink();
-        //            } // end of trdobjects.count
-        //        }
-        //        catch (Exception ex) { Util.LogError(ex); }
-        //    }
-        //}
+ 
 
         private void DotheTink()
         {
             try
             {
+               
+
  
-                  Util.WriteToChat("I am in DotheTink");
-                   CoreManager.Current.RenderFrame += new EventHandler<EventArgs>(RenderFrame_Tink);
+                 Util.WriteToChat("I am in DotheTink");
+                  if (lstSortedSalvage.Count > 0)
+                  {
+                      //for (int i = 0; i < nsalvageCount; i++)
+                      //{
+                      tinkTime = DateTime.Now;
+                      Util.WriteToChat("I am ready to do the tink");
+ 
+                      oSalvageObj = lstSortedSalvage[0];
+                      nsalvageid = oSalvageObj.Id;
+                      lstSortedSalvage.Remove(oSalvageObj);
+                     CoreManager.Current.RenderFrame += new EventHandler<EventArgs>(RenderFrame_Tink);
+
+                  }
+                  else { returnItem(); }
+                    
+              
 
 
             }
@@ -262,9 +196,6 @@ namespace Handyman
             {
 
                 CoreManager.Current.RenderFrame -= new EventHandler<EventArgs>(RenderFrame_Tink);
-                //  Double TimeElapsed = Convert.ToDouble(DateTime.Now - tinkTime);
-                //  Util.WriteToChat("Number of seconds: " + TimeElapsed);
-                //  Util.WriteToChat("DateTimenow: " + DateTime.Now.ToString() + "tinktime: " +  tinkTime.ToString());
                 if ((DateTime.Now - tinkTime).TotalSeconds > 5)
                 {
                     try
@@ -279,7 +210,7 @@ namespace Handyman
 
                 }
                 //   else { CoreManager.Current.RenderFrame += new EventHandler<EventArgs>(RenderFrame_Tink); }
-                else { DotheTink(); }
+                else { CoreManager.Current.RenderFrame += new EventHandler<EventArgs>(RenderFrame_Tink); }
 
             }
             catch (Exception ex) { Util.LogError(ex); }
@@ -299,21 +230,39 @@ namespace Handyman
             {
                 CoreManager.Current.RenderFrame -= new EventHandler<EventArgs>(RenderFrame_TinkSucceed);
                 //     Util.WriteToChat("I am in function to check if tink succeeded");
-                if ((DateTime.Now - tinkSucceed).TotalSeconds > 15)
-                {
 
-                    if (bTinkSucceeded) 
-                    { 
-                        CoreManager.Current.RenderFrame -= new EventHandler<EventArgs>(RenderFrame_Tink); 
-                        Util.WriteToChat("Tink succeeded.");
-                        returnItem(); 
+                    if (bTinkSucceeded)
+                    {
+                        try
+                        {
+                            if (lstSortedSalvage.Count > 0)
+                            {
+                                lstSalvages = new List<WorldObject>();
+                                lstSalvages.AddRange(lstSortedSalvage);
+                                lstSortedSalvage = new List<WorldObject>();
+                                var sort = from WorldObject in lstSalvages
+                                           orderby WorldObject.Values(DoubleValueKey.SalvageWorkmanship) ascending
+                                           select WorldObject;
+                                lstSortedSalvage.AddRange(sort);
+                                nsalvageCount = lstSortedSalvage.Count;
+
+                                CoreManager.Current.RenderFrame -= new EventHandler<EventArgs>(RenderFrame_TinkSucceed);
+                                bTinkSucceeded = false;
+                                Util.WriteToChat("Tink succeeded.");
+                                tinkTime = DateTime.Now;
+                                DotheTink();
+                            }
+                            else { returnItem(); }
+                        }
+                         catch (Exception ex) { Util.LogError(ex); }
+
                     }
-                    //   else { CoreManager.Current.RenderFrame += new EventHandler<EventArgs>(RenderFrame_Tink); }
-                    else { DotheTink(); }
+                    else
+                    {
+                       DotheTink();
+                    }
                 }
-                else
-                { CoreManager.Current.RenderFrame += new EventHandler<EventArgs>(RenderFrame_TinkSucceed); }
-            }
+            
             catch (Exception ex) { Util.LogError(ex); }
         }
 
@@ -321,7 +270,7 @@ namespace Handyman
         {
             returnTime = DateTime.Now;
  
-            if (otinkobj != null)
+            if (oTinkObj != null)
             {
                 msecondarysubRoutine = "returningitem";
                 CoreManager.Current.RenderFrame += new EventHandler<EventArgs>(RenderFrame_ReturnItem);
@@ -333,7 +282,7 @@ namespace Handyman
         {
             returnTime = DateTime.Now;
 
-            if ( osalvageobj != null)
+            if ( oSalvageObj != null)
             {
                 msecondarysubRoutine = "returningsalvage";
                 CoreManager.Current.RenderFrame += new EventHandler<EventArgs>(RenderFrame_ReturnItem);
@@ -354,17 +303,25 @@ namespace Handyman
                     {
 
                         CoreManager.Current.RenderFrame -= new EventHandler<EventArgs>(RenderFrame_ReturnItem);
-                         if(msecondarysubRoutine.Contains("item")){ otinkobj = null; msecondarysubRoutine = "";}
-                        else if(msecondarysubRoutine.Contains("salvage")){ osalvageobj = null; msecondarysubRoutine = "";}
+                         if(msecondarysubRoutine.Contains("item")){ oTinkObj = null; msecondarysubRoutine = "";}
+                        else if(msecondarysubRoutine.Contains("salvage")){ oSalvageObj = null; msecondarysubRoutine = "";}
                         Util.WriteToChat("ItemReturned.");
                         bReturnItemCompleted = false;
-                        
-                        if (osalvageobj != null) {returnSalvage(); }
+                        nsalvageCount = lstSortedSalvage.Count;
+                        if (nsalvageCount > 0)
+                        {
+                            for (int i = 0; i < nsalvageCount; i++)
+                            {
+                                bReturnItemCompleted = false;
+                                oSalvageObj = lstSortedSalvage[i];
+                                returnSalvage();
+                            }
+                        }
                         else
                         {
                             mroutine = "readyfortrade";
                             Util.WriteToChat("I am turning on trade again.");
-                            Core.WorldFilter.AcceptTrade += new EventHandler<AcceptTradeEventArgs>(WorldFilter_AcceptTrade); 
+                            Core.WorldFilter.AcceptTrade += new EventHandler<AcceptTradeEventArgs>(WorldFilter_AcceptTrade);
                         }
                         
                     }
@@ -380,178 +337,105 @@ namespace Handyman
 
 
 
-        private void checkFocus()
-        {
-            try
-            {
-                //  Util.WriteToChat("I am in needFocus");
-                checkEnhancements();
-              //  Util.WriteToChat("ketmaninuse: " + bKetnaninUse.ToString());
-                if (!bKetnaninUse)
-                {
-                    //  Util.WriteToChat("I am in !bketmaninuse");
-                    msecondarysubRoutine = "GetFocus";
-                    mroutine = "drinkingbeers";
-                    string name = "Spit Ale";
-                    drinkBeers(name);
-
-                }
-                else { checkBeers(); }
-            }
-            catch (Exception ex) { Util.LogError(ex); }
-        }
+ 
 
 
-
-        private void checkBeers()
-        {
-            try
-            {
-                //  Util.WriteToChat("I am in checkBeers and chatcmd: " + chatCmd);
-                checkEnhancements();
-                mroutine = "drinkingbeers";
-
-                switch (chatCmd)
-                {
-                    case "Weapon":
-                        if (!bZongoinUse)
-                        {
-                            msecondarysubRoutine = "GeneralBeers";
-                            string name = "Zongo";
-                           // Util.WriteToChat("I am boing to drink Zongo's");
-                            drinkBeers(name);
-
-                        }
-                        break;
-                    case "Armor":
-                        if (!bHunterinUse)
-                        {
-                            msecondarysubRoutine = "GeneralBeers";
-                            string name = "Hunter";
-                           // Util.WriteToChat("I am gboing to drink Hunter's");
-                            drinkBeers(name);
-
-                        }
-                        break;
-
-                    case "Item":
-                        if (!bBrighteyesinUse)
-                        {
-                            msecondarysubRoutine = "GeneralBeers";
-                            string name = "Amber Ape";
-                          //  Util.WriteToChat("I am boing to drink AmberApe");
-                            drinkBeers(name);
-
-
-                        }
-                        break;
-
-                    default:
-                        return;
-                        break;
-                }
-
-                mroutine = "";
-                msecondarysubRoutine = "EquiptheBot";
-                msub = "remove";
-                clearBotOutfit();
-
-
-
-
-            }
-            catch (Exception ex) { Util.LogError(ex); }
-        }
-
-        private void drinkBeers(string beername)
-        {
-            try
-            {
-                try
-                {
-                    // GetInventoryCraftbot()
-                   // Util.WriteToChat("Number of items: " + botInventory.Count());
-                }
-
-                catch (Exception ex) { Util.LogError(ex); }
-                try
-                {
-                    foreach (WorldObject obj in botInventory)
-                    {
-                        // Util.WriteToChat(obj.Name);
-                        if (obj.Name.Contains(beername))
-                        {
-                            beer = obj.Id;
-                           // Util.WriteToChat(beername);
-                            break;
-                        }
-                    }
-                }
-                catch (Exception ex) { Util.LogError(ex); }
-
-                //  Util.WriteToChat("Beer id: " + beer);
-                if (beer < 0)
-                {
-                    bDrankBeer = false;
-                   // Util.WriteToChat("I am on my way to useenhancements");
-                    UseEnhance = DateTime.Now;
-                    useEnhancement();
-                }
-                else
-                {
-                    
-                  //  Util.WriteToChat("I am in drinkbeers and beername = " + beername + "; msecondarysubroutine = " + msecondarysubRoutine);
-                    mHoldingRoutine = msecondarysubRoutine;
-                    timeContinue = DateTime.Now;
-                    CoreManager.Current.RenderFrame += new EventHandler<EventArgs>(RenderFrame_RequestContinue);
-                }
-            }
-            catch (Exception ex) { Util.LogError(ex); }
-        }
-
-        private void RenderFrame_RequestContinue(object sender, EventArgs e)
-        {
-            if ((DateTime.Now - timeContinue).TotalSeconds > 10)
-            {
-                CoreManager.Current.RenderFrame -= new EventHandler<EventArgs>(RenderFrame_RequestContinue);
-
-                Globals.Host.Actions.InvokeChatParser("/r " + ", " + "I am out of beers.  If you wish me to continue anyway, please tell me, 'continue'.");
-                timeContinue = DateTime.Now;
-                CoreManager.Current.RenderFrame += new EventHandler<EventArgs>(RenderFrame_Continue);
-
-            }
-        }
-
-
-
-        private void RenderFrame_Continue(object sender, EventArgs e)
-        {
-            try
-            {
-                if (bContinue || (DateTime.Now - timeContinue).TotalSeconds > 30)
-                {
-                    CoreManager.Current.RenderFrame -= new EventHandler<EventArgs>(RenderFrame_Continue);
-                   // Util.WriteToChat("bContinue = " + bContinue + "; and mholdingroutine = " + mHoldingRoutine);
-                    if (bContinue && mHoldingRoutine.Contains("GetFocus"))
-                    {
-                        checkBeers();
-                    }
-                    else if (bContinue && mHoldingRoutine.Contains("GeneralBeers"))
-                    {
-                        mroutine = "equippingbot";
-                        msecondarysubRoutine = "EquiptheBot";
-                        msub = "remove";
-                        clearBotOutfit();
-                    }
-                    else
-                    {
-                        Globals.Host.Actions.InvokeChatParser("/r " + ", " + "I am discontinuing this session.");
-                        chatCmd = "";
-                        CoreManager.Current.RenderFrame += new EventHandler<EventArgs>(RenderFrame_DressBot);
-                    }
-                }
-            }
-            catch (Exception ex) { Util.LogError(ex); }
-        }
+ 
     }
 }
+
+//Code fragments
+//  Double TimeElapsed = Convert.ToDouble(DateTime.Now - tinkTime);
+//  Util.WriteToChat("Number of seconds: " + TimeElapsed);
+//  Util.WriteToChat("DateTimenow: " + DateTime.Now.ToString() + "tinktime: " +  tinkTime.ToString());
+
+//private void TinkWeapon()
+//{
+//    //  Util.WriteToChat("I am in TinkWeapon");
+//    if (chatCmd == "Weapon")
+//    {
+//        try
+//        {
+//            if (lstTrdObjects.Count > 1)
+//            {
+
+//                int nobj = lstTrdObjects.Count;
+//                WorldObject obj;
+//                string objClass;
+//                int nobjID;
+//                salvages = new List<int>();
+//                for (int n = 0; n < nobj; n++)
+//                {
+//                    obj = lstTrdObjects[n];
+//               //     Util.WriteToChat("n = " + n + ", " + obj.Name);
+//                    nobjID = obj.Id;
+//                    objClass = obj.ObjectClass.ToString();
+//                    //       if (lstTrdObjects[n].Name.Contains("Salvaged"))
+//                    if (obj.Name.Contains("Salvage"))
+//                    {
+//                        nsalvageid = nobjID;
+//                        salvages.Add(nobjID);
+//                        osalvageobj = obj;
+//                    //    Util.WriteToChat("Added " + obj.Name + " to salvages");
+//                    }
+//                    else if (objClass.Contains("Melee") || objClass.Contains("Missile"))
+//                    {
+
+//                    }
+//                } // end of for int n
+
+//             //   Util.WriteToChat("Objtotink " + otinkobj.ToString() + ", salvage " + salvages[0].ToString());
+//                DotheTink();
+//            } // end of lstTrdObjects.count
+//        }
+//        catch (Exception ex) { Util.LogError(ex); }
+//    }
+//}
+
+//private void TinkArmor()
+//{
+//    //  Util.WriteToChat("I am in TinkArmor");
+//    if (chatCmd == "Armor")
+//    {
+//        try
+//        {
+//            if (lstTrdObjects.Count > 1)
+//            {
+
+//                int nobj = lstTrdObjects.Count;
+//                WorldObject obj;
+//                string objClass;
+//                int nobjID;
+//              //  Util.WriteToChat("nobj " + nobj);
+//                List<int> salvages = new List<int>();
+//                for (int n = 0; n < nobj; n++)
+//                {
+//                    obj = lstTrdObjects[n];
+//                  //  Util.WriteToChat("n = " + n + ", " + obj.Name);
+//                    nobjID = obj.Id;
+//                    objClass = obj.ObjectClass.ToString();
+//                    //       if (lstTrdObjects[n].Name.Contains("Salvaged"))
+//                    if (obj.Name.Contains("Salvage"))
+//                    {
+//                        nsalvageid = nobjID;
+//                        salvages.Add(nobjID);
+//                        osalvageobj = obj;
+//                      //  Util.WriteToChat("Added " + obj.Name + " to salvages");
+//                    }
+//                    else if (objClass.Contains("Armor") || objClass.Contains("Clothing"))
+//                    {
+//                        ntinkobjid = nobjID;
+//                        otinkobj = obj;
+//                     //   Util.WriteToChat("otinkobj " + otinkobj.ToString());
+
+//                    }
+//                } // end of for int n
+
+//             //   Util.WriteToChat("Objtotink " + otinkobj.ToString() + ", salvage " + salvages[0].ToString());
+//                tinkTime = DateTime.Now;
+//                DotheTink();
+//            } // end of lstTrdObjects.count
+//        }
+//        catch (Exception ex) { Util.LogError(ex); }
+//    }
+//}

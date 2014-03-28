@@ -58,9 +58,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Botchat.cs" />
     <Compile Include="botChores.cs" />
     <Compile Include="Buff.cs" />
-    <Compile Include="ChanceofSuccess.cs" />
+    <Compile Include="Enhancements.cs" />
     <Compile Include="Class1.cs" />
     <Compile Include="Equip.cs" />
     <Compile Include="Globals.cs" />

@@ -50,23 +50,17 @@ namespace Handyman
             public bool bAlchemyBuffed = false;
             public bool bArcaneBuffed = false;
 
+            private DateTime BuffingTime;
+            private DateTime DotheBuffTime;
+
   
         public void buff()
         {
             try
             {
-               //if (bUseBuffBot)
-                //{
-                //    // buffBot();
-                //}
-                //else if (inCraft || inTrade)
-                //{
-                //    _queBuff = true;
-                //}
-                //else
-                //{
-                  //  base.Core.Filter<FileService>();
-                     if (buffWand == 0)
+                if(msecondarysubRoutine.Contains("Buffing"))
+                {
+                      if (buffWand == 0)
                      {
                          Util.WriteToChat("Please go to settings file and setup wand for buffing.");
                      }
@@ -78,17 +72,11 @@ namespace Handyman
                      {
                          try
                          {
-                             bSpellsinUse = true;
+                             bSpellsinUse = false;
                              checkBuffs();
                              if (!bSpellsinUse)
                              {
-                                 mroutine = "buffing";
-                                 buffPending = true;
-                                 msubRoutine = "buffing";
-                                 msecondarysubRoutine = "buffing";
-                                 Core.Actions.AutoWield(buffWand);
-                                 nbuffsCast = 0;
-                                 initiateBuffingSequence();
+                                  initiateBuffingSequence();
                              }
                              else { return; }
 
@@ -99,6 +87,7 @@ namespace Handyman
                          catch (Exception ex) { Util.LogError(ex); }
                          //  Core.Actions.SetCombatMode(CombatState.Peace);
                      }
+                }
                     
             }
                                         catch (Exception ex) { Util.LogError(ex); }
@@ -107,41 +96,116 @@ namespace Handyman
 
                 private void initiateBuffingSequence()
                 {
+                    if (msecondarysubRoutine.Contains("Buffing"))
+                    {
                     try
                     {
                         if (spellsList != null)
-                        { numBuffs = spellsList.Count-1; SubscribeBuffingEvents(); Util.WriteToChat("Number of spells in spells List " + numBuffs);}
+                        { 
+                            Util.WriteToChat("I am in initiateBuffingSequence.");
+                            BuffingTime = DateTime.Now;
+                            mroutine = "buffing";
+                            buffPending = true;
+                            msubRoutine = "buffing";
+                            msecondarysubRoutine = "buffing";
+                            Core.Actions.AutoWield(buffWand);
+                            nbuffsCast = 0;
+                            numBuffs = spellsList.Count();
+
+                       //     Core.Actions.UseItem(buffWand, 0);
+                            SubscribeBuffingEvents(); 
+                         //   Util.WriteToChat("Number of spells in spells List " + numBuffs);
+                        }
                         else { Util.WriteToChat("You must first create a spells list."); }
                         
                   
                     }
                     catch (Exception ex) { Util.LogError(ex); }
                 }
+                }
 
                 public void SubscribeBuffingEvents()
                 {
                     try
                     {
-                        BuffingTimer.Tick += BuffingTimer_Tick;
-                        BuffingTimer.Interval = 1000;
-                        BuffingTimer.Start();
+                       // Util.WriteToChat("I am in Subscribebuffingevents; nbuffsCast = " + nbuffsCast.ToString());
+                        nSpellID = spellsList[nbuffsCast];
+                        Core.Actions.SetCombatMode(CombatState.Magic);
+                        bbuffCast = false;
+ 
+                        CoreManager.Current.RenderFrame += new EventHandler<EventArgs>(RenderFrame_Buff);
+
+                        //BuffingTimer.Tick += BuffingTimer_Tick;
+                        //BuffingTimer.Interval = 1000;
+                        //BuffingTimer.Start();
                     }
                     catch (Exception ex) { Util.LogError(ex); }
                 }
 
-                private void BuffingTimer_Tick(object sender, EventArgs BuffingTimer_Tick)
+                //private void BuffingTimer_Tick(object sender, EventArgs BuffingTimer_Tick)
+                //{
+                //    try
+                //    {
+                //        Util.WriteToChat("I am in BuffingTimer_Tick; nbuffsCast = " + nbuffsCast.ToString());
+                //        BuffingTime = DateTime.Now;
+                //        CoreManager.Current.RenderFrame += new EventHandler<EventArgs>(RenderFrame_Buff);
+                //     }
+
+
+
+                //    catch (Exception ex) { Util.LogError(ex); }
+
+                //}
+
+                private void RenderFrame_Buff(object sender, EventArgs e)
                 {
                     try
                     {
-                        nSpellID = spellsList[nbuffsCast];
-                        Core.Actions.SetCombatMode(CombatState.Magic);
-                        Core.Actions.CastSpell(nSpellID, Core.CharacterFilter.Id);
-                        waitForCast();
+
+                        if ((DateTime.Now - BuffingTime).TotalMilliseconds > 500)
+                        {
+
+                            CoreManager.Current.RenderFrame -= new EventHandler<EventArgs>(RenderFrame_Buff);
+                      //      Util.WriteToChat("I am in renderframe_Buff.");
+                            Core.Actions.SetCombatMode(CombatState.Magic);
+
+ 
+
+                            //CoreManager.Current.RenderFrame -= new EventHandler<EventArgs>(RenderFrame_Buff);
+                            DotheBuffTime = DateTime.Now;
+                            CoreManager.Current.RenderFrame += new EventHandler<EventArgs>(RenderFrame_DoSpell);
+                            //Core.Actions.CastSpell(nSpellID, Core.CharacterFilter.Id);
+
+                            //  BuffingTimer.Stop();
+                            //nSpellID = spellsList[nbuffsCast];
+                           // Util.WriteToChat("I am in RenderFrame_Buff; nbuffsCast = " + nbuffsCast.ToString() + " and spellid: " + nSpellID.ToString());
+                    //        //    waitForCast();
+                        }
                     }
 
                     catch (Exception ex) { Util.LogError(ex); }
 
                 }
+
+                private void RenderFrame_DoSpell(object sender, EventArgs e)
+                {
+                    //code violation has to do with turning virindi on and it interfering at this point.  Next time buff need to look at the timers more closely.
+                    if ((DateTime.Now - DotheBuffTime).TotalMilliseconds > 400)
+                    {
+                        try
+                        {
+                         //   CoreManager.Current.RenderFrame -= new EventHandler<EventArgs>(RenderFrame_DoSpell);
+
+                          //  Core.Actions.SetCombatMode(CombatState.Magic);
+                            Core.Actions.CastSpell(nSpellID, Core.CharacterFilter.Id);
+                        }
+
+
+                        catch (Exception ex) { Util.LogError(ex); }
+                    }
+
+                }
+
 
                 private void CharacterFilter_ActionComplete(object sender, EventArgs e)
                 {
@@ -158,30 +222,6 @@ namespace Handyman
  
                 }
 
-                private void processChatBuffing()
-                {
-                    if (bDrankBeer) { return; }
-                    if (bTinkSucceeded) { return; }
-                  //  if (bContinue) { return; }
-                    if(msubRoutine.Contains("buffing") || msecondarysubRoutine.Contains("buffing"))
-                    {
-                    if (buffPending && nbuffsCast < numBuffs ) { Util.WriteToChat("I just cast " + nSpellID + ", " + "nbuffscast = " + nbuffsCast);  }
-                    else 
-                    {
-                        Core.Actions.SetCombatMode(CombatState.Peace);
-
-                        BuffingTimer.Stop(); 
-                        buffPending = false; 
-                        Util.WriteToChat("I have turned off buffing timer. nbuffsCast = " + nbuffsCast);
-                        msubRoutine = "";
-                        msecondarysubRoutine = "";
-                        mroutine = "";
-                        checkFocus();
-
-                    }
-                    }
-
-                }
 
                 private void checkBuffs()
                 {
@@ -190,24 +230,65 @@ namespace Handyman
                         int spellCount = Core.CharacterFilter.Enchantments.Count;
                         int spellListCount = spellsList.Count;
                         int timeleft;
+                        
                         Util.WriteToChat("Number of active enchantments: " + spellCount.ToString());
                         Util.WriteToChat("Number of spells in spell list: " + spellListCount.ToString());
+
                         for (int i = 0; i < spellListCount; i++)
                         {
-                            Util.WriteToChat("I am in check buffs and bspellsinuse: " + bSpellsinUse.ToString());
-                            if (!bSpellsinUse) { return; }
-                            int spellid = spellsList[i];
-                            for (int k = 0; k < spellCount; k++)
+                            try
                             {
-                                if (Core.CharacterFilter.Enchantments[i].SpellId == spellid)
+                                //if (!bSpellsinUse) { initiateBuffingSequence(); }
+                                //else
+                                //{
+                                spellID = spellsList[i+3];
+                                //   Util.WriteToChat(spellID.ToString());
+                                if (Core.CharacterFilter.SpellBook.Contains(spellID))
                                 {
-                                    timeleft = Core.CharacterFilter.Enchantments[spellid].TimeRemaining;
-                                    if (timeleft < 300) { bSpellsinUse = false; }
-                                    else { bSpellsinUse = true; }
-                                }
-                                else { bSpellsinUse = false; }
-                            }
-                        }
+                                    for (int k = 0; k < spellCount; k++)
+                                    {
+                                        if (Core.CharacterFilter.Enchantments[k].SpellId == spellID)
+                                        {
+                                            timeleft = Core.CharacterFilter.Enchantments[k].TimeRemaining;
+                                            if (timeleft < 20)
+                                            {
+                                                bSpellsinUse = false;
+                                                Util.WriteToChat("There are less than 20 minutes left; going to buff.");
+                                                i = spellListCount;
+                                                k = spellCount;
+                                                msecondarysubRoutine = "Buffing";
+                                                initiateBuffingSequence();
+                                            }
+                                            else
+                                            {
+                                                bSpellsinUse = true;
+                                                Util.WriteToChat("There are at least 20 minutes left.");
+                                                i = spellListCount;
+                                                k = spellCount;
+                                                checkEnhancements();
+                                            }
+                                        }
+
+                                        else
+                                        {
+                                            //Enchantments no longer contains spell  
+                                            Util.WriteToChat("This spell is not in list of enchantments.");
+                                            bSpellsinUse = false;
+                                            i = spellListCount;
+                                            msecondarysubRoutine = "Buffing";
+                                            break;
+                                            
+                                        }
+
+                                    }//eof for int = k
+                                } // eof if spellbook contains
+                            } //eof second try
+                            catch (Exception ex) { Util.LogError(ex); }
+                        } // eof int i
+
+                        if (!bSpellsinUse) { initiateBuffingSequence(); }
+                        Util.WriteToChat("At the end of checkbuffs() bSpellsinUse: " + bSpellsinUse.ToString());
+                        if (bSpellsinUse) { checkEnhancements(); }
                     }
                                           
                     catch (Exception ex) { Util.LogError(ex); }

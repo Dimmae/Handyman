@@ -153,6 +153,7 @@ namespace Handyman
             xdocSpells.Root.Add(new XElement("Spell8", 4586));
             xdocSpells.Root.Add(new XElement("Spell8", 4552));
             xdocSpells.Root.Add(new XElement("Spell8", 4499));
+            xdocSpells.Root.Add(new XElement("Spell8", 4510));
 
             xdocSpells.Save(spellsFilename);
             }
@@ -161,21 +162,45 @@ namespace Handyman
 
             private void initStaticEquip()
             {
+                //try{
+                //                        int InventoryCount = 0;
+                //    var inventorymatches = Core.WorldFilter.GetInventory().Where(x => x.Name == namecheck);
+                //    if(inventorymatches.Count() > 0)
+                //    {
+                //        foreach(WorldObject inv in inventorymatches)
+                //        {
+                //            if(!inv.LongKeys.Contains((int)LongValueKey.StackCount)){InventoryCount++;}
+                //            else{InventoryCount += inv.Values(LongValueKey.StackCount);}
+                //        }
+
                 try{
+                    List<WorldObject> wo = new List<WorldObject>();
+                    var tempa = Core.WorldFilter.GetInventory().Where(x=> x.Name == "Focusing Stone");
+                    if (tempa.Count() > 0) { wo.AddRange(tempa); Util.WriteToChat("tempa has a count of " + wo.Count.ToString()); }
+                    omyFocusingStone = wo[0];
+                    myFocusingStone = omyFocusingStone.Id;
+                    wo.Clear();
+
+                    var tempb = Core.WorldFilter.GetInventory().Where(x=> x.Name == "Ust");
+                    if (tempb.Count() > 0) { wo.AddRange(tempb); }
+                    omyUst = wo[0];
+                    myUst = omyUst.Id;
+                    wo.Clear();
+
+                    Util.WriteToChat("My focusing stone has an id of " + myFocusingStone.ToString());
                     List<WorldObject> temp = new List<WorldObject>();
                     if(File.Exists(equipmentFilename))
                     {
                         xdocEquipment = new XDocument();
 
                         xdocEquipment = XDocument.Load(equipmentFilename);
-                        myUst = Convert.ToInt32(xdocEquipment.Root.Element("Salvaging_Ust").Element("MyUst").Value);
-                        myFocusingStone = Convert.ToInt32(xdocEquipment.Root.Element("Tinking_Crafting").Element("MyFocusingStone").Value);
+
                         buffWand = Convert.ToInt32(xdocEquipment.Root.Element("Buffing").Element("BuffWand").Value);
                 
                         idleOutfit = Convert.ToInt32(xdocEquipment.Root.Element("IdleWield").Element("ItemID").Value);
                         msubinven = "IdleClothes";
-                       //   GetInventoryCraftbot();
-                      temp.AddRange(botInventory);
+                        // GetInventory();
+                      temp.AddRange(obotInventory);
                        foreach (WorldObject obj in temp)
                       {
                          if (obj.Id == idleOutfit)
@@ -183,7 +208,7 @@ namespace Handyman
                             oIdleOutfit = obj;
                             temp.Clear();
                              temp = null;
-                          //   Util.WriteToChat("idleoutfit: " + idleOutfit.ToString());
+                            Util.WriteToChat("idleoutfit: " + oIdleOutfit.Name);
                              break;
                          }
                       }
@@ -193,6 +218,40 @@ namespace Handyman
 
            }
 
+
+            private void GetInventory()
+            {
+                try
+                {
+                    inventoryTime = DateTime.Now;
+                    msubinven = "GetInventory";
+                    nBotInventoryID = new List<int>();
+                    obotInventory = new List<WorldObject>();
+                    bInventoryFinished = false;
+
+                    foreach (Decal.Adapter.Wrappers.WorldObject obj in Core.WorldFilter.GetInventory())
+                    {
+                        try
+                        {
+                            objID = obj.Id;
+                            nBotInventoryID.Add(objID);
+                            obotInventory.Add(obj);
+                        }
+
+                        catch (Exception ex) { Util.LogError(ex); }
+
+
+                    } // endof foreach world object
+                    Util.WriteToChat("I have completed inventory and count is " + obotInventory.Count);
+                    inventoryCount = nBotInventoryID.Count;
+                    msubinven = "";
+                    bInventoryFinished = true;
+                    // Util.WriteToChat("Number of items in inventory: " + botInventory.Count);
+                    // CoreManager.Current.RenderFrame -= new EventHandler<EventArgs>(RenderFrame_Inventory);
+
+                }
+                catch (Exception ex) { Util.LogError(ex); }
+            }
 
 
 

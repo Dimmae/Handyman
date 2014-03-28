@@ -21,6 +21,7 @@ namespace Handyman
 {
     public partial class PluginCore : PluginBase
     {
+        WindowsTimer MasterTimer = new WindowsTimer();
         string HandymanDir = null;
         DirectoryInfo dinfo = null;
 
@@ -37,7 +38,7 @@ namespace Handyman
 
         // private System.Windows.Forms.WindowsTimer MasterWindowsTimer = new System.Windows.Forms.WindowsTimer();
         public static string Log;
-        public string chatCmd = "";
+        public string chatCmd = "None";
         private string toonname;
         private string world;
         private string currDir;
@@ -47,9 +48,9 @@ namespace Handyman
         static PluginHost host;
 
 
-        public WindowsTimer buffWindowsTimer;
-        public WindowsTimer actionWindowsTimer;
-        public WindowsTimer tradeWindowsTimer;
+        //public WindowsTimer buffWindowsTimer;
+        //public WindowsTimer actionWindowsTimer;
+        //public WindowsTimer tradeWindowsTimer;
 
         public List<string> chatCmds = new List<string>();
 
@@ -60,9 +61,23 @@ namespace Handyman
         XDocument xdocSpells = new XDocument();
        List<Int32> spellsList = null;
        List<string> botCmds = null;
-       List<WorldObject> objTrade = new List<WorldObject>();
+//       List<WorldObject> objTrade = new List<WorldObject>();
        List<int> objTradeID = null;
        List<int> salvages = null;
+       List<int> mCurrID;
+       List<WorldObject> lstTrdObjects;
+       List<WorldObject> lstSalvages;
+       List<WorldObject> lstSortedSalvage;
+       WorldObject oSalvageObj = null;
+       WorldObject oTrdObjAccepted = null;
+        int nTrdObjAccepted = 0;
+       WorldObject oTrdObj = null;
+       WorldObject oGemObj = null;
+       WorldObject oTinkObj = null;
+       private int ntinkobjid = 0;
+       private int nsalvageid = 0;
+       private int nsalvageCount = 0;
+
         //Settings variables
        bool bdrinkbeeranyway;
         bool bContinue;
@@ -97,6 +112,8 @@ namespace Handyman
         bool bMasterPet;
         bool bTinkSucceeded;
         bool bReturnItemCompleted;
+        bool bBrill;
+        bool bbuffCast;
  
         int buffWand = 0;
         int objSelectedID = 0;
@@ -105,13 +122,23 @@ namespace Handyman
         int myUst = 0;
         int myFocusingStone = 0;
         int idleOutfit = 0;
+        WorldObject omyFocusingStone;
+        WorldObject omyUst;
         WorldObject oIdleOutfit;
 
         DateTime setupTime = DateTime.MinValue;
+        DateTime inventoryTime = DateTime.MinValue;
+        DateTime tinkTime;
+        DateTime tinkSucceed;
+        DateTime timeContinue;
+        DateTime returnTime;
+        DateTime idTrdObjs;
+
 
  
 
         string Skill = null;
+
 
         System.Windows.Forms.Timer CraftbotMasterTimer = new System.Windows.Forms.Timer();
         System.Windows.Forms.Timer BuffingTimer = new System.Windows.Forms.Timer();

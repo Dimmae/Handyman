@@ -133,7 +133,9 @@ namespace Handyman
           //  WindowMessage += new EventHandler<WindowMessageEventArgs>(FilterCore_WindowMessage);
 
 
-
+            MasterTimer.Stop();
+            MasterTimer = null;
+           // MasterTimer.Dispose();
 
             if (BuffingTimer != null) { BuffingTimer.Stop(); BuffingTimer = null; buffPending = false; }
 
@@ -148,18 +150,17 @@ namespace Handyman
             botGuid = 0;
             requestorID = 0;
             requestorName = null;
-            if (actionWindowsTimer != null) { actionWindowsTimer.Stop(); }
+            //if (actionWindowsTimer != null) { actionWindowsTimer.Stop(); }
             objID = 0;
-            mBotInventoryID = null;
+            nBotInventoryID = null;
             mCurrID = null;
             //ActionPendingQueue = null;
             //ActionsPending = null;
             chatCmd = null;
-            trdObj = null;
-            TrdObjects = null;
+            oTrdObj = null;
+            lstTrdObjects = null;
             trdObjID = 0;
-            mBotInventoryID = null;
-            botInventory = null;
+            obotInventory = null;
 
             
   
@@ -171,31 +172,45 @@ namespace Handyman
               Util.WriteToChat("Handyman Plugin now online.");
                     try
                     {
+                        MasterTimer.Interval = 1000;
+                        MasterTimer.Start();
                         setupTime = DateTime.Now;
                       //  Util.WriteToChat("I am ready to go to setup lists.");
                         Initializepaths();
 
                         fillSettingsVariables();
                         SetUpXdocs();
+                        Util.WriteToChat("I have just set up xdocs.");
                         setUpLists();
-                        GetInventoryCraftbot();
-                    //    if ((DateTime.Now - setupTime).TotalSeconds > 1)
-                    //    {
-                         //   CoreManager.Current.RenderFrame -= new EventHandler<EventArgs>(RenderFrame_Inventory);
-                            initStaticEquip();
-                            CoreManager.Current.RenderFrame += new EventHandler<EventArgs>(RenderFrame_DressBot);
-                            Core.EchoFilter.ServerDispatch += HandymanServerDispatch;
-
-                     //   }
-
+                        GetInventory();
+                        CoreManager.Current.RenderFrame += new EventHandler<EventArgs>(RenderFrame_EquipLists);
+ 
                     }
                     catch (Exception ex) { Util.LogError(ex); }
             }
 
+        private void RenderFrame_EquipLists(object sender, EventArgs e)
+        {
+            try{
+            if ((DateTime.Now - setupTime).TotalSeconds > 1)
+            {
+                CoreManager.Current.RenderFrame -= new EventHandler<EventArgs>(RenderFrame_EquipLists);
+                initStaticEquip();
+                CoreManager.Current.RenderFrame += new EventHandler<EventArgs>(RenderFrame_DressBot);
+                Core.EchoFilter.ServerDispatch += HandymanServerDispatch;
+
+            }
+
+            }
+            catch (Exception ex) { Util.LogError(ex); }
+ 
+        }
+ 
+
         private void RenderFrame_DressBot(object sender, EventArgs e)
         {
             
-            if (bEnabled && ((DateTime.Now - setupTime).TotalSeconds > 10))
+            if (bEnabled && ((DateTime.Now - setupTime).TotalSeconds > 2))
             {
                 try
                 {
@@ -205,7 +220,7 @@ namespace Handyman
                     chatCmd = "";
                     clearBotOutfit();
 
-                    if (bBuffOnStart) { buff(); }
+                    if (bBuffOnStart) { msecondarysubRoutine = "buffing"; buff(); }
 
                     //   checkPlugin();
                 }
@@ -262,128 +277,6 @@ namespace Handyman
             catch (Exception ex) { Util.LogError(ex); }
         }
 
-        private void CraftbotMasterTimer_Tick(Object Sender, EventArgs CraftBotMasterTimer_Tick)
-        {
-
-        }
-
-
-        void Core_ChatBoxMessage(object sender, Decal.Adapter.ChatTextInterceptEventArgs e)
-        {
-            if (bEnabled)
-            {
-           //     Util.WriteToChat("Bot is enabled");
-                try
-                {
-                    if (e.Text.Contains("You cast"))
-                    {
-                        if (e.Text.Contains("You cast Incantation of Creature")) { nbuffsCast++; }
-                        if (e.Text.Contains("You cast Incantation of Focus")) { nbuffsCast++; }
-                        if (e.Text.Contains("You cast Incantation of Willpower")) { nbuffsCast++; }
-                        if (e.Text.Contains("You cast Incantation of Life")) { nbuffsCast++; }
-                        if (e.Text.Contains("You cast Incantation of Mana")) { nbuffsCast++; }
-                        if (e.Text.Contains("You cast Incantation of Item")) { nbuffsCast++; }
-                        if (e.Text.Contains("You cast Incantation of Coordination")) { nbuffsCast++; }
-                        if (e.Text.Contains("You cast Incantation of Endurance")) { nbuffsCast++; }
-                        if (e.Text.Contains("You cast Incantation of Strength")) { nbuffsCast++; }
-                        if (e.Text.Contains("You cast Incantation of Armor Tinkering")) { nbuffsCast++; }
-                        if (e.Text.Contains("You cast Incantation of Weapon Tinkering")) { nbuffsCast++; }
-                        if (e.Text.Contains("You cast Incantation of Magic Item")) { nbuffsCast++; }
-                        if (e.Text.Contains("You cast Incantation of Item Tinkering")) { nbuffsCast++; }
-                        if (e.Text.Contains("You cast Incantation of Alchemy")) { nbuffsCast++; }
-                        if (e.Text.Contains("You cast Incantation of Cooking")) { nbuffsCast++; }
-                        if (e.Text.Contains("You cast Incantation of Lockpick")) { nbuffsCast++; }
-                        if (e.Text.Contains("You cast Incantation of Fletching")) { nbuffsCast++; }
-                        if (e.Text.Contains("You cast Incantation of Arcanum Salvaging")) { nbuffsCast++; }
-                        if (e.Text.Contains("You cast Incantation of Arcane Enlightenment")) { nbuffsCast++; }
-                        processChatBuffing();
-                    }
-
-                        if (e.Text.Contains("You cast Ketnan's Eye")) { bDrankBeer = true; }
-                        if (e.Text.Contains("You cast Brighteyes' Favor")) { bDrankBeer = true; }
-                        if (e.Text.Contains("You cast Zongo's Fist")) { bDrankBeer = true; }
-                        if (e.Text.Contains("You cast Hunter's Hardiness")) { bDrankBeer = true; }
-                        if (e.Text.Contains(toonname + " successfully applies")) { bTinkSucceeded = true; }
-                        if ((e.Text.Contains("tells you")) && ((e.Text.Contains("Continue")) || (e.Text.Contains("continue")))) { bContinue = true; }
-                        if (e.Text.Contains("You give")){bReturnItemCompleted = true;}
  
-                        
-
-                    if (chatCmd == null || chatCmd == "")
-                    {
-                        if ((e.Text.Contains("tells you")) && ((e.Text.Contains("Salvage")) || (e.Text.Contains("salvage"))))
-                        {
-                            chatCmd = "Salvage";
-                            initiateSalvagingSequence();
-
-                        }
-                        if ((e.Text.Contains("tells you")) && ((e.Text.Contains("Weapon") || e.Text.Contains("weapon"))))
-                        {
-                            try{
-                            chatCmd = "Weapon";
-                            Util.WriteToChat("chatcmd = " + chatCmd);
-                            initiateCraftingTinkingSequence();
-                            //Core.Actions.TradeReset();
-                            //Core.WorldFilter.EnterTrade += new EventHandler<Decal.Adapter.Wrappers.EnterTradeEventArgs>(WorldFilter_EnterTrade);
-                            }
-                            catch (Exception ex) { Util.LogError(ex); }
-
-
-                        }
-                        if ((e.Text.Contains("tells you")) && ((e.Text.Contains("Armor") || e.Text.Contains("armor"))))
-                        {
-                            chatCmd = "Armor";
-                            initiateCraftingTinkingSequence();
- 
-                            //Core.Actions.TradeReset();
-                            //Core.WorldFilter.EnterTrade += new EventHandler<Decal.Adapter.Wrappers.EnterTradeEventArgs>(WorldFilter_EnterTrade);
-
-                        }
-                        if ((e.Text.Contains("tells you")) && ((e.Text.Contains("Item") || e.Text.Contains("item"))))
-                        {
-                            chatCmd = "Item";
-                            initiateCraftingTinkingSequence();
- 
-                            //Core.Actions.TradeReset();
-                            //Core.WorldFilter.EnterTrade += new EventHandler<Decal.Adapter.Wrappers.EnterTradeEventArgs>(WorldFilter_EnterTrade);
-
-                        }
-                        if ((e.Text.Contains("tells you")) && ((e.Text.Contains("Magic") || e.Text.Contains("magic"))))
-                        {
-                            chatCmd = "MagicItem";
-                            initiateCraftingTinkingSequence();
- 
-                            //Core.Actions.TradeReset();
-                            //Core.WorldFilter.EnterTrade += new EventHandler<Decal.Adapter.Wrappers.EnterTradeEventArgs>(WorldFilter_EnterTrade);
-
-                        }
-                        if ((e.Text.Contains("tells you")) && ((e.Text.Contains("Dye") || e.Text.Contains("dye"))))
-                        {
-                            chatCmd = "Dye";
-                            initiateCraftingTinkingSequence();
- 
-                            //Core.Actions.TradeReset();
-                            //Core.WorldFilter.EnterTrade += new EventHandler<Decal.Adapter.Wrappers.EnterTradeEventArgs>(WorldFilter_EnterTrade);
-
-                        }
-                        if ((e.Text.Contains("tells you")) && ((e.Text.Contains("Lockpick") || e.Text.Contains("lockpick"))))
-                        {
-                            chatCmd = "Lockpick";
-                            initiateCraftingTinkingSequence();
- 
-                            //Core.Actions.TradeReset();
-                            //Core.WorldFilter.EnterTrade += new EventHandler<Decal.Adapter.Wrappers.EnterTradeEventArgs>(WorldFilter_EnterTrade);
-
-                        }
-                        
-                    }
-                  
-                }
-                catch (Exception ex) { Util.LogError(ex); }
-
-            }
-
-        }
-
     }
 }

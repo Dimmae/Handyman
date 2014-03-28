@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.IO;
 using VirindiViewService;
 using MyClasses.MetaViewWrappers;
@@ -17,6 +18,7 @@ namespace Handyman
 {
     public partial class PluginCore : PluginBase
     {
+        private DateTime traderreplytime;
         public static class Util
         {
             public static void LogError(Exception ex)
@@ -48,28 +50,94 @@ namespace Handyman
 
             public static void WriteToChat(string message)
             {
+                
                 try
                 {
                     Globals.Host.Actions.AddChatText("<{" + Globals.PluginName + "}>: " + message, 5);
                 }
                 catch (Exception ex) { LogError(ex); }
             }
+
+
+
         }
 
-            public void WriteToTrader(string message)
+        public void WriteToFellow(string message)
+        {
+            try
             {
+                Globals.Host.Actions.InvokeChatParser("/f "  + message);
+            }
+            catch (Exception ex) { Util.LogError(ex); }
+        }
+
+
+        //public void WriteToTrader(string message)
+        //{
+        //    try
+        //    {
+        //        Util.WriteToChat("I am in function to write a message to client.");
+        //        Globals.Host.Actions.InvokeChatParser("/tell " + requestorName + ", " + message);
+        //    }
+        //    catch (Exception ex) { Util.LogError(ex); }
+        //}
+
+
+
+
+        public void WriteToTrader(string message)
+            {
+                Util.WriteToChat("I am in message maker for teller");
                 try
                 {
-                    Globals.Host.Actions.InvokeChatParser("/tell " + requestorName + ", " +  message);
+                  //  botMess = message;
+                  bMessGiven = false;
+                  requestorName = requestorName.Trim();
+                  //  requestorName = requestorName.Trim() + ", ";
+                    Util.WriteToChat("I am in function to write to trader");
+                //    Util.WriteToChat(botMess);
+                    doMessage();
+                  //  Globals.Host.Actions.InvokeChatParser("/tell " + tellWho + ", " + botMessage);
+ 
+            //   //  Globals.Host.Actions.InvokeChatParser("/tell " + requestorName + ", " + botMessage);
+
+
                 }
                 catch (Exception ex) { Util.LogError(ex); }
             }
 
+        private void doMessage()
+        {
+            if (!bMessGiven)
+            {
+                traderreplytime = DateTime.Now;
+
+                CoreManager.Current.RenderFrame += new EventHandler<EventArgs>(RenderFrame_WriteReplytoTrader);
+            }
+            else { botMess = null; return; }
+
+        }
+        private void RenderFrame_WriteReplytoTrader(object sender, EventArgs e)
+        {
+            try
+            {
+              if ((DateTime.Now - traderreplytime).TotalSeconds > 1)
+                {
+                    CoreManager.Current.RenderFrame -= new EventHandler<EventArgs>(RenderFrame_WriteReplytoTrader);
+                    Util.WriteToChat(requestorName);
+
+                    string message = "/tell " + requestorName + ", " + botMess;
+                    Util.WriteToChat(message);
+                    try { Host.Actions.InvokeChatParser("/tell " + requestorName + ", " + botMess); }
+                    catch (Exception ex) { Util.LogError(ex); }
+
+                    doMessage();
+                }
+            }
+            catch (Exception ex) { Util.LogError(ex); }
 
 
-
-
-        
+        }
 
     }
 }// end of util

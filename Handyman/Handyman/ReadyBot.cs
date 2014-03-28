@@ -23,10 +23,10 @@ namespace Handyman
 {
     public partial class PluginCore
     {
-        private void setupBot()
-        {
-            GetInventoryCraftbot();
-        }
+        //private void setupBot()
+        //{
+        //    GetInventoryCraftbot();
+        //}
 
  
         
